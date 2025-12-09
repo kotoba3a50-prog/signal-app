@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Окно сигналов</title>
-    <!-- Скрипт Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -15,12 +14,9 @@
             --danger: #fb7185;
             --text-main: #e5e7eb;
             --text-muted: #9ca3af;
-            --outline: #1f2937;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -34,10 +30,7 @@
             color: var(--text-main);
         }
 
-        .shell {
-            max-width: 480px;
-            margin: 0 auto;
-        }
+        .shell { max-width: 480px; margin: 0 auto; }
 
         .topbar {
             display: flex;
@@ -118,46 +111,13 @@
             box-shadow: 0 0 6px rgba(34, 197, 94, 0.9);
         }
 
-        .field-group {
-            margin-bottom: 10px;
-        }
+        .field-group { margin-bottom: 10px; }
 
         label {
             font-size: 12px;
             color: var(--text-muted);
             display: block;
             margin-bottom: 4px;
-        }
-
-        .field-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        /* Селекты: тёмные, без белых блоков */
-
-        select {
-            flex: 1;
-            padding: 9px 11px;
-            border-radius: 12px;
-            border: 1px solid rgba(55, 65, 81, 0.95);
-            background-color: #020617;
-            background-image:
-                radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9), #020617);
-            color: var(--text-main);
-            font-size: 13px;
-            appearance: none;
-            outline: none;
-        }
-
-        select:focus {
-            border-color: rgba(34, 197, 94, 0.8);
-            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
-        }
-
-        select option {
-            background-color: #020617;
-            color: var(--text-main);
         }
 
         .pill-row {
@@ -176,7 +136,7 @@
             border: 1px solid rgba(31, 41, 55, 0.9);
         }
 
-        /* Режимы торговли */
+        /* Режимы */
 
         .mode-toggle {
             display: inline-flex;
@@ -201,6 +161,144 @@
             background: linear-gradient(135deg, #22c55e, #4ade80);
             color: #022c22;
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.7);
+        }
+
+        /* Кастомные dropdown’ы */
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(55, 65, 81, 0.95);
+            background:
+                radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9), #020617);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .dropdown-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .dropdown-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #020617;
+            flex-shrink: 0;
+        }
+
+        .dropdown-labels {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .dropdown-main {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-caret {
+            font-size: 14px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: #020617;
+            border-radius: 12px;
+            border: 1px solid rgba(55, 65, 81, 0.95);
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.95);
+            max-height: 230px;
+            overflow-y: auto;
+            z-index: 20;
+            padding: 4px;
+            display: none;
+        }
+
+        .dropdown.open .dropdown-menu { display: block; }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 6px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .dropdown-item.active {
+            background: rgba(22, 163, 74, 0.16);
+        }
+
+        .dropdown-item-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .dropdown-item-main {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .dropdown-item-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .dropdown-item-right {
+            font-size: 11px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .dropdown.small .dropdown-toggle {
+            padding: 7px 10px;
+        }
+
+        .dropdown.small .dropdown-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
         }
 
         #btn-start {
@@ -246,13 +344,8 @@
             font-size: 12px;
         }
 
-        .result-asset {
-            font-weight: 600;
-        }
-
-        .result-expiry {
-            color: var(--text-muted);
-        }
+        .result-asset { font-weight: 600; }
+        .result-expiry { color: var(--text-muted); }
 
         .result-main {
             display: flex;
@@ -261,9 +354,7 @@
             gap: 10px;
         }
 
-        .direction-block {
-            flex: 1.1;
-        }
+        .direction-block { flex: 1.1; }
 
         .direction-label {
             font-size: 11px;
@@ -279,17 +370,9 @@
             gap: 6px;
         }
 
-        .direction-value span.arrow {
-            font-size: 20px;
-        }
-
-        .direction-up {
-            color: #4ade80;
-        }
-
-        .direction-down {
-            color: #fb7185;
-        }
+        .direction-value span.arrow { font-size: 20px; }
+        .direction-up { color: #4ade80; }
+        .direction-down { color: #fb7185; }
 
         .timer-shell {
             flex: 0.9;
@@ -351,11 +434,7 @@
             text-align: center;
         }
 
-        .hint strong {
-            color: #e5e7eb;
-        }
-
-        /* История сигналов */
+        .hint strong { color: #e5e7eb; }
 
         .history-block {
             margin-top: 10px;
@@ -385,19 +464,9 @@
             padding: 4px 0;
         }
 
-        .history-left {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .history-asset {
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .history-expiry {
-            font-size: 10px;
-        }
+        .history-left { display: flex; flex-direction: column; }
+        .history-asset { font-weight: 600; color: var(--text-main); }
+        .history-expiry { font-size: 10px; }
 
         .history-right {
             display: flex;
@@ -406,26 +475,13 @@
             font-size: 11px;
         }
 
-        .history-time {
-            color: var(--text-muted);
-        }
-
-        .history-dir-up {
-            color: #4ade80;
-        }
-
-        .history-dir-down {
-            color: #fb7185;
-        }
+        .history-time { color: var(--text-muted); }
+        .history-dir-up { color: #4ade80; }
+        .history-dir-down { color: #fb7185; }
 
         @media (max-width: 360px) {
-            .result-main {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .timer-shell {
-                justify-content: flex-start;
-            }
+            .result-main { flex-direction: column; align-items: stretch; }
+            .timer-shell { justify-content: flex-start; }
         }
     </style>
 </head>
@@ -436,9 +492,7 @@
             <span class="logo-dot"></span>
             <span>AISIGNAL</span>
         </div>
-        <div class="user-pill" id="user-pill">
-            Загрузка профиля…
-        </div>
+        <div class="user-pill" id="user-pill">Загрузка профиля…</div>
     </div>
 
     <div class="card">
@@ -450,7 +504,7 @@
             </div>
         </div>
 
-        <!-- Режим торговли -->
+        <!-- Режим -->
         <div class="field-group">
             <label>Режим торговли</label>
             <div class="mode-toggle" id="mode-toggle">
@@ -464,36 +518,237 @@
             </div>
         </div>
 
-        <!-- Монеты / активы -->
+        <!-- Монета / актив -->
         <div class="field-group">
-            <label for="asset">Монета / актив</label>
-            <div class="field-row">
-                <select id="asset">
+            <label>Монета / актив</label>
+            <div class="dropdown" id="asset-dropdown">
+                <button class="dropdown-toggle" id="asset-toggle" type="button">
+                    <div class="dropdown-left">
+                        <div class="dropdown-icon" id="asset-icon">₿</div>
+                        <div class="dropdown-labels">
+                            <div class="dropdown-main" id="asset-label-main">BTCUSDT</div>
+                            <div class="dropdown-sub" id="asset-label-sub">Bitcoin</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-caret">▾</div>
+                </button>
+                <div class="dropdown-menu" id="asset-menu">
                     <!-- Forex -->
-                    <option value="EURUSD">EURUSD · EUR / USD</option>
-                    <option value="GBPUSD">GBPUSD · GBP / USD</option>
-                    <option value="USDJPY">USDJPY · USD / JPY</option>
-                    <option value="USDCHF">USDCHF · USD / CHF</option>
-                    <option value="USDCAD">USDCAD · USD / CAD</option>
-                    <option value="AUDUSD">AUDUSD · AUD / USD</option>
-                    <option value="NZDUSD">NZDUSD · NZD / USD</option>
-                    <option value="EURJPY">EURJPY · EUR / JPY</option>
-                    <option value="EURGBP">EURGBP · EUR / GBP</option>
-                    <option value="EURCHF">EURCHF · EUR / CHF</option>
-                    <option value="GBPJPY">GBPJPY · GBP / JPY</option>
+                    <div class="dropdown-item" data-symbol="EURUSD" data-name="EUR / USD" data-icon="FX" data-color="#38bdf8">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#38bdf8;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">EURUSD</div>
+                                <div class="dropdown-item-sub">Евро / Доллар</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="GBPUSD" data-name="GBP / USD" data-icon="FX" data-color="#6366f1">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#6366f1;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">GBPUSD</div>
+                                <div class="dropdown-item-sub">Фунт / Доллар</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="USDJPY" data-name="USD / JPY" data-icon="FX" data-color="#0ea5e9">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#0ea5e9;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">USDJPY</div>
+                                <div class="dropdown-item-sub">Доллар / Иена</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="USDCHF" data-name="USD / CHF" data-icon="FX" data-color="#14b8a6">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#14b8a6;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">USDCHF</div>
+                                <div class="dropdown-item-sub">Доллар / Франк</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="USDCAD" data-name="USD / CAD" data-icon="FX" data-color="#22c55e">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#22c55e;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">USDCAD</div>
+                                <div class="dropdown-item-sub">Доллар / Канадец</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="AUDUSD" data-name="AUD / USD" data-icon="FX" data-color="#eab308">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#eab308;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">AUDUSD</div>
+                                <div class="dropdown-item-sub">Австралиец / Доллар</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="NZDUSD" data-name="NZD / USD" data-icon="FX" data-color="#f97316">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#f97316;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">NZDUSD</div>
+                                <div class="dropdown-item-sub">Новозеландец / Доллар</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="EURJPY" data-name="EUR / JPY" data-icon="FX" data-color="#f97316">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#f97316;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">EURJPY</div>
+                                <div class="dropdown-item-sub">Евро / Иена</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="EURGBP" data-name="EUR / GBP" data-icon="FX" data-color="#ec4899">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#ec4899;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">EURGBP</div>
+                                <div class="dropdown-item-sub">Евро / Фунт</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="EURCHF" data-name="EUR / CHF" data-icon="FX" data-color="#a855f7">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#a855f7;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">EURCHF</div>
+                                <div class="dropdown-item-sub">Евро / Франк</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="GBPJPY" data-name="GBP / JPY" data-icon="FX" data-color="#22d3ee">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#22d3ee;">FX</div>
+                            <div>
+                                <div class="dropdown-item-main">GBPJPY</div>
+                                <div class="dropdown-item-sub">Фунт / Иена</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Forex</div>
+                    </div>
+
                     <!-- Metals -->
-                    <option value="XAUUSD">XAUUSD · Золото</option>
-                    <option value="XAGUSD">XAGUSD · Серебро</option>
+                    <div class="dropdown-item" data-symbol="XAUUSD" data-name="Gold" data-icon="Au" data-color="#fbbf24">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#fbbf24;">Au</div>
+                            <div>
+                                <div class="dropdown-item-main">XAUUSD</div>
+                                <div class="dropdown-item-sub">Золото</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Metal</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="XAGUSD" data-name="Silver" data-icon="Ag" data-color="#9ca3af">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#9ca3af;">Ag</div>
+                            <div>
+                                <div class="dropdown-item-main">XAGUSD</div>
+                                <div class="dropdown-item-sub">Серебро</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Metal</div>
+                    </div>
+
                     <!-- Crypto -->
-                    <option value="BTCUSDT">BTCUSDT · Bitcoin</option>
-                    <option value="ETHUSDT">ETHUSDT · Ethereum</option>
-                    <option value="BNBUSDT">BNBUSDT · BNB</option>
-                    <option value="SOLUSDT">SOLUSDT · Solana</option>
-                    <option value="XRPUSDT">XRPUSDT · XRP</option>
-                    <option value="LTCUSDT">LTCUSDT · Litecoin</option>
-                    <option value="DOGEUSDT">DOGEUSDT · Doge</option>
-                    <option value="TONUSDT">TONUSDT · Toncoin</option>
-                </select>
+                    <div class="dropdown-item" data-symbol="BTCUSDT" data-name="Bitcoin" data-icon="₿" data-color="#f7931a">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#f7931a;">₿</div>
+                            <div>
+                                <div class="dropdown-item-main">BTCUSDT</div>
+                                <div class="dropdown-item-sub">Bitcoin</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="ETHUSDT" data-name="Ethereum" data-icon="Ξ" data-color="#6366f1">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#6366f1;">Ξ</div>
+                            <div>
+                                <div class="dropdown-item-main">ETHUSDT</div>
+                                <div class="dropdown-item-sub">Ethereum</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="BNBUSDT" data-name="BNB" data-icon="BNB" data-color="#facc15">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#facc15;">B</div>
+                            <div>
+                                <div class="dropdown-item-main">BNBUSDT</div>
+                                <div class="dropdown-item-sub">BNB</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="SOLUSDT" data-name="Solana" data-icon="SOL" data-color="#22c55e">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#22c55e;">S</div>
+                            <div>
+                                <div class="dropdown-item-main">SOLUSDT</div>
+                                <div class="dropdown-item-sub">Solana</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="XRPUSDT" data-name="XRP" data-icon="XRP" data-color="#22d3ee">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#22d3ee;">X</div>
+                            <div>
+                                <div class="dropdown-item-main">XRPUSDT</div>
+                                <div class="dropdown-item-sub">XRP</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="LTCUSDT" data-name="Litecoin" data-icon="Ł" data-color="#9ca3af">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#9ca3af;">Ł</div>
+                            <div>
+                                <div class="dropdown-item-main">LTCUSDT</div>
+                                <div class="dropdown-item-sub">Litecoin</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="DOGEUSDT" data-name="Dogecoin" data-icon="Ð" data-color="#facc15">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#facc15;">Ð</div>
+                            <div>
+                                <div class="dropdown-item-main">DOGEUSDT</div>
+                                <div class="dropdown-item-sub">Dogecoin</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                    <div class="dropdown-item" data-symbol="TONUSDT" data-name="Toncoin" data-icon="TON" data-color="#0ea5e9">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#0ea5e9;">T</div>
+                            <div>
+                                <div class="dropdown-item-main">TONUSDT</div>
+                                <div class="dropdown-item-sub">Toncoin</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+                </div>
             </div>
             <div class="pill-row">
                 <div class="pill">Выбери инструмент, по которому будешь открывать сделку у брокера.</div>
@@ -502,21 +757,130 @@
 
         <!-- Время экспирации -->
         <div class="field-group">
-            <label for="expiry">Время экспирации</label>
-            <div class="field-row">
-                <select id="expiry">
-                    <option value="5s"  data-seconds="5">5 секунд</option>
-                    <option value="10s" data-seconds="10">10 секунд</option>
-                    <option value="15s" data-seconds="15">15 секунд</option>
-                    <option value="30s" data-seconds="30">30 секунд</option>
-                    <option value="45s" data-seconds="45">45 секунд</option>
-                    <option value="1m"  data-seconds="60">1 минута</option>
-                    <option value="2m"  data-seconds="120">2 минуты</option>
-                    <option value="3m"  data-seconds="180">3 минуты</option>
-                    <option value="5m"  data-seconds="300">5 минут</option>
-                    <option value="10m" data-seconds="600">10 минут</option>
-                    <option value="15m" data-seconds="900">15 минут</option>
-                </select>
+            <label>Время экспирации</label>
+            <div class="dropdown small" id="expiry-dropdown">
+                <button class="dropdown-toggle" id="expiry-toggle" type="button">
+                    <div class="dropdown-left">
+                        <div class="dropdown-icon" id="expiry-icon" style="background:#1d4ed8;">⏱</div>
+                        <div class="dropdown-labels">
+                            <div class="dropdown-main" id="expiry-label-main">5 секунд</div>
+                            <div class="dropdown-sub" id="expiry-label-sub">Очень быстрый раунд</div>
+                        </div>
+                    </div>
+                    <div class="dropdown-caret">▾</div>
+                </button>
+                <div class="dropdown-menu" id="expiry-menu">
+                    <div class="dropdown-item" data-value="5s" data-seconds="5" data-label="5 секунд" data-sub="Хард-скальпинг">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">5 секунд</div>
+                                <div class="dropdown-item-sub">Хард-скальпинг</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">5s</div>
+                    </div>
+                    <div class="dropdown-item" data-value="10s" data-seconds="10" data-label="10 секунд" data-sub="Сверхбыстрый вход">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">10 секунд</div>
+                                <div class="dropdown-item-sub">Сверхбыстрый вход</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">10s</div>
+                    </div>
+                    <div class="dropdown-item" data-value="15s" data-seconds="15" data-label="15 секунд" data-sub="Быстрый импульс">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">15 секунд</div>
+                                <div class="dropdown-item-sub">Быстрый импульс</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">15s</div>
+                    </div>
+                    <div class="dropdown-item" data-value="30s" data-seconds="30" data-label="30 секунд" data-sub="Импульсная сделка">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">30 секунд</div>
+                                <div class="dropdown-item-sub">Импульсная сделка</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">30s</div>
+                    </div>
+                    <div class="dropdown-item" data-value="45s" data-seconds="45" data-label="45 секунд" data-sub="Поймать движение">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">45 секунд</div>
+                                <div class="dropdown-item-sub">Поймать движение</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">45s</div>
+                    </div>
+                    <div class="dropdown-item" data-value="1m" data-seconds="60" data-label="1 минута" data-sub="Классический скальпинг">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">1 минута</div>
+                                <div class="dropdown-item-sub">Классический скальпинг</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">1m</div>
+                    </div>
+                    <div class="dropdown-item" data-value="2m" data-seconds="120" data-label="2 минуты" data-sub="Чуть спокойнее">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">2 минуты</div>
+                                <div class="dropdown-item-sub">Чуть спокойнее</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">2m</div>
+                    </div>
+                    <div class="dropdown-item" data-value="3m" data-seconds="180" data-label="3 минуты" data-sub="Сбалансированный вход">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">3 минуты</div>
+                                <div class="dropdown-item-sub">Сбалансированный вход</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">3m</div>
+                    </div>
+                    <div class="dropdown-item" data-value="5m" data-seconds="300" data-label="5 минут" data-sub="Более плавное движение">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">5 минут</div>
+                                <div class="dropdown-item-sub">Более плавное движение</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">5m</div>
+                    </div>
+                    <div class="dropdown-item" data-value="10m" data-seconds="600" data-label="10 минут" data-sub="Мини-свинг">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">10 минут</div>
+                                <div class="dropdown-item-sub">Мини-свинг</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">10m</div>
+                    </div>
+                    <div class="dropdown-item" data-value="15m" data-seconds="900" data-label="15 минут" data-sub="Максимум спокойствия">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">15 минут</div>
+                                <div class="dropdown-item-sub">Максимум спокойствия</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">15m</div>
+                    </div>
+                </div>
             </div>
             <div class="pill-row">
                 <div class="pill">Короткое время — больше динамики, длинное — более размеренная торговля.</div>
@@ -525,6 +889,7 @@
 
         <button id="btn-start">Получить прогноз и запустить таймер</button>
 
+        <!-- Результат -->
         <div class="result-block" id="signal-block">
             <div class="result-top">
                 <div class="result-asset" id="signal-asset"></div>
@@ -553,12 +918,9 @@
                 Здесь будут подсказки по раунду.
             </div>
 
-            <!-- История сигналов -->
             <div class="history-block">
                 <div class="history-title">История за сессию</div>
-                <div class="history-list" id="history-list">
-                    Пока ещё нет сигналов.
-                </div>
+                <div class="history-list" id="history-list">Пока ещё нет сигналов.</div>
             </div>
         </div>
     </div>
@@ -570,15 +932,11 @@
 
 <script>
     const tg = window.Telegram?.WebApp;
-    if (tg) {
-        tg.expand();
-    }
+    if (tg) tg.expand();
 
-    const STORAGE_KEY = 'aisignal_state_v1';
+    const STORAGE_KEY = 'aisignal_state_v2';
 
     const btnStart = document.getElementById('btn-start');
-    const selectAsset = document.getElementById('asset');
-    const selectExpiry = document.getElementById('expiry');
 
     const signalBlock = document.getElementById('signal-block');
     const signalAsset = document.getElementById('signal-asset');
@@ -593,6 +951,20 @@
     const modeHint = document.getElementById('mode-hint');
     const modeButtons = modeToggle.querySelectorAll('.mode-btn');
 
+    const assetDropdown = document.getElementById('asset-dropdown');
+    const assetToggle = document.getElementById('asset-toggle');
+    const assetMenu = document.getElementById('asset-menu');
+    const assetIcon = document.getElementById('asset-icon');
+    const assetLabelMain = document.getElementById('asset-label-main');
+    const assetLabelSub = document.getElementById('asset-label-sub');
+
+    const expiryDropdown = document.getElementById('expiry-dropdown');
+    const expiryToggle = document.getElementById('expiry-toggle');
+    const expiryMenu = document.getElementById('expiry-menu');
+    const expiryIcon = document.getElementById('expiry-icon');
+    const expiryLabelMain = document.getElementById('expiry-label-main');
+    const expiryLabelSub = document.getElementById('expiry-label-sub');
+
     const historyList = document.getElementById('history-list');
 
     let currentMode = 'calm';
@@ -601,7 +973,10 @@
     let remaining = 0;
     let history = [];
 
-    // Показываем юзера в шапке
+    let currentAsset = null;
+    let currentExpiry = null;
+
+    // Профиль в шапке
     try {
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const u = tg.initDataUnsafe.user;
@@ -612,12 +987,11 @@
         } else {
             userPill.textContent = 'Локальный режим';
         }
-    } catch (e) {
+    } catch(e) {
         userPill.textContent = 'Профиль недоступен';
     }
 
     // ----- Режимы -----
-
     function applyMode(mode, changeExpiry = true) {
         currentMode = mode;
         modeButtons.forEach(btn => {
@@ -626,31 +1000,110 @@
 
         if (mode === 'calm') {
             modeHint.textContent = 'Спокойный режим — больше времени на решение, меньше шума.';
-            if (changeExpiry) {
-                selectExpiry.value = '3m';
-            }
+            if (changeExpiry) pickExpiryByValue('3m');
         } else {
             modeHint.textContent = 'Агрессивный режим — короткие сделки и максимум динамики.';
-            if (changeExpiry) {
-                selectExpiry.value = '15s';
-            }
+            if (changeExpiry) pickExpiryByValue('15s');
         }
     }
 
     modeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            const mode = btn.dataset.mode;
-            applyMode(mode, true);
+            applyMode(btn.dataset.mode, true);
             saveState();
         });
     });
 
+    // ----- Dropdown helpers -----
+
+    function closeAllDropdowns() {
+        assetDropdown.classList.remove('open');
+        expiryDropdown.classList.remove('open');
+    }
+
+    assetToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = assetDropdown.classList.contains('open');
+        closeAllDropdowns();
+        if (!isOpen) assetDropdown.classList.add('open');
+    });
+
+    expiryToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = expiryDropdown.classList.contains('open');
+        closeAllDropdowns();
+        if (!isOpen) expiryDropdown.classList.add('open');
+    });
+
+    document.addEventListener('click', () => closeAllDropdowns());
+
+    function pickAssetFromItem(item) {
+        const symbol = item.dataset.symbol;
+        const name = item.dataset.name;
+        const iconChar = item.dataset.icon || symbol[0];
+        const color = item.querySelector('.dropdown-icon').style.backgroundColor || '#1f2937';
+
+        currentAsset = { symbol, name };
+
+        assetIcon.textContent = iconChar.length > 2 ? iconChar[0] : iconChar;
+        assetIcon.style.backgroundColor = color;
+        assetLabelMain.textContent = symbol;
+        assetLabelSub.textContent = name;
+
+        assetMenu.querySelectorAll('.dropdown-item').forEach(el => {
+            el.classList.toggle('active', el === item);
+        });
+    }
+
+    function pickExpiryFromItem(item) {
+        const value = item.dataset.value;
+        const seconds = parseInt(item.dataset.seconds, 10);
+        const label = item.dataset.label;
+        const sub = item.dataset.sub;
+
+        currentExpiry = { value, seconds, label };
+
+        expiryLabelMain.textContent = label;
+        expiryLabelSub.textContent = sub || '';
+        // иконка у всех одинаковая ⏱, цвет берём с элемента
+        expiryIcon.style.backgroundColor =
+            item.querySelector('.dropdown-icon').style.backgroundColor || '#1d4ed8';
+
+        expiryMenu.querySelectorAll('.dropdown-item').forEach(el => {
+            el.classList.toggle('active', el === item);
+        });
+    }
+
+    assetMenu.addEventListener('click', (e) => {
+        const item = e.target.closest('.dropdown-item');
+        if (!item) return;
+        pickAssetFromItem(item);
+        assetDropdown.classList.remove('open');
+        saveState();
+    });
+
+    expiryMenu.addEventListener('click', (e) => {
+        const item = e.target.closest('.dropdown-item');
+        if (!item) return;
+        pickExpiryFromItem(item);
+        expiryDropdown.classList.remove('open');
+        saveState();
+    });
+
+    function pickAssetBySymbol(symbol) {
+        const item = assetMenu.querySelector(`.dropdown-item[data-symbol="${symbol}"]`);
+        if (item) pickAssetFromItem(item);
+    }
+
+    function pickExpiryByValue(value) {
+        const item = expiryMenu.querySelector(`.dropdown-item[data-value="${value}"]`);
+        if (item) pickExpiryFromItem(item);
+    }
+
     // ----- Таймер -----
 
     function startTimer(seconds) {
-        if (timerId) {
-            clearInterval(timerId);
-        }
+        if (timerId) clearInterval(timerId);
         totalSeconds = seconds;
         remaining = seconds;
         updateTimerUI();
@@ -694,7 +1147,6 @@
             historyList.textContent = 'Пока ещё нет сигналов.';
             return;
         }
-
         historyList.innerHTML = '';
         history.forEach(item => {
             const row = document.createElement('div');
@@ -741,52 +1193,55 @@
         return `${h}:${m}`;
     }
 
-    // ----- LocalStorage -----
+    // ----- State -----
 
     function saveState() {
         try {
             const state = {
-                asset: selectAsset.value,
-                expiryValue: selectExpiry.value,
-                mode: currentMode
+                mode: currentMode,
+                assetSymbol: currentAsset?.symbol,
+                expiryValue: currentExpiry?.value
             };
             window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {}
+        } catch(e) {}
     }
 
     function loadState() {
+        // базовый дефолт
+        applyMode('calm', false);
+        // первая монета в списке
+        const firstAsset = assetMenu.querySelector('.dropdown-item');
+        if (firstAsset) pickAssetFromItem(firstAsset);
+        // первый таймфрейм
+        const firstExpiry = expiryMenu.querySelector('.dropdown-item');
+        if (firstExpiry) pickExpiryFromItem(firstExpiry);
+
         try {
             const raw = window.localStorage.getItem(STORAGE_KEY);
             if (!raw) return;
             const state = JSON.parse(raw);
 
-            if (state.mode === 'aggressive' || state.mode === 'calm') {
+            if (state.assetSymbol) pickAssetBySymbol(state.assetSymbol);
+            if (state.expiryValue) pickExpiryByValue(state.expiryValue);
+            if (state.mode === 'calm' || state.mode === 'aggressive') {
                 applyMode(state.mode, false);
-            } else {
-                applyMode('calm', false);
             }
-
-            if (state.asset && [...selectAsset.options].some(o => o.value === state.asset)) {
-                selectAsset.value = state.asset;
-            }
-
-            if (state.expiryValue && [...selectExpiry.options].some(o => o.value === state.expiryValue)) {
-                selectExpiry.value = state.expiryValue;
-            }
-        } catch (e) {
-            applyMode('calm', false);
-        }
+        } catch(e) {}
     }
 
-    loadState(); // восстановим прошлый выбор
+    loadState();
 
     // ----- Кнопка запуска -----
 
     btnStart.addEventListener('click', () => {
-        const asset = selectAsset.value;
-        const expiryOption = selectExpiry.options[selectExpiry.selectedIndex];
-        const seconds = parseInt(expiryOption.dataset.seconds, 10);
-        const expiryLabel = expiryOption.textContent;
+        if (!currentAsset || !currentExpiry) {
+            hintEl.textContent = 'Выбери актив и время экспирации перед запуском.';
+            return;
+        }
+
+        const asset = currentAsset.symbol;
+        const expiryLabel = currentExpiry.label;
+        const seconds = currentExpiry.seconds;
 
         const direction = Math.random() < 0.5 ? 'UP' : 'DOWN';
 
@@ -800,13 +1255,11 @@
         const arrowSpan = document.createElement('span');
         arrowSpan.className = 'arrow';
         arrowSpan.textContent = arrow;
-
         const textSpan = document.createElement('span');
         textSpan.textContent = text;
 
         signalDirection.appendChild(arrowSpan);
         signalDirection.appendChild(textSpan);
-
         signalDirection.className =
             'direction-value ' + (direction === 'UP' ? 'direction-up' : 'direction-down');
 
