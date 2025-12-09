@@ -167,6 +167,33 @@
             border: 1px solid rgba(31, 41, 55, 0.9);
         }
 
+        /* Режимы торговли */
+
+        .mode-toggle {
+            display: inline-flex;
+            padding: 3px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(31, 41, 55, 0.9);
+            gap: 4px;
+        }
+
+        .mode-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 5px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+            color: #022c22;
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.7);
+        }
+
         #btn-start {
             width: 100%;
             margin-top: 6px;
@@ -319,6 +346,69 @@
             color: #e5e7eb;
         }
 
+        /* История сигналов */
+
+        .history-block {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(51, 65, 85, 0.7);
+        }
+
+        .history-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .history-list {
+            font-size: 11px;
+            color: var(--text-muted);
+            max-height: 130px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .history-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-asset {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .history-expiry {
+            font-size: 10px;
+        }
+
+        .history-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+        }
+
+        .history-time {
+            color: var(--text-muted);
+        }
+
+        .history-dir-up {
+            color: #4ade80;
+        }
+
+        .history-dir-down {
+            color: #fb7185;
+        }
+
         @media (max-width: 360px) {
             .result-main {
                 flex-direction: column;
@@ -348,6 +438,20 @@
             <div class="badge-live">
                 <span class="badge-live-dot"></span>
                 LIVE
+            </div>
+        </div>
+
+        <!-- Режим торговли -->
+        <div class="field-group">
+            <label>Режим торговли</label>
+            <div class="mode-toggle" id="mode-toggle">
+                <button type="button" class="mode-btn active" data-mode="calm">Спокойный</button>
+                <button type="button" class="mode-btn" data-mode="aggressive">Агрессивный</button>
+            </div>
+            <div class="pill-row">
+                <div class="pill" id="mode-hint">
+                    Спокойный режим — больше времени на решение, меньше шума.
+                </div>
             </div>
         </div>
 
@@ -381,7 +485,7 @@
                 </select>
             </div>
             <div class="pill-row">
-                <div class="pill">Короткое время — больше динамики, выше шум. Длинное — спокойнее.</div>
+                <div class="pill">Короткое время — больше динамики, длинное — более размеренная торговля.</div>
             </div>
         </div>
 
@@ -416,11 +520,19 @@
             <div class="hint" id="hint">
                 Здесь будут подсказки по раунду.
             </div>
+
+            <!-- История сигналов -->
+            <div class="history-block">
+                <div class="history-title">История за сессию</div>
+                <div class="history-list" id="history-list">
+                    Пока ещё нет сигналов.
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="hint" style="margin-top:10px;">
-        После окончания таймера <strong>начни новый раунд</strong>: заново выбери монету и время.
+        1️⃣ Выбери режим и актив. 2️⃣ Укажи время экспирации. 3️⃣ Нажми <strong>«Получить прогноз»</strong> и действуй по плану.
     </div>
 </div>
 
@@ -429,6 +541,8 @@
     if (tg) {
         tg.expand();
     }
+
+    const STORAGE_KEY = 'aisignal_state_v1';
 
     const btnStart = document.getElementById('btn-start');
     const selectAsset = document.getElementById('asset');
@@ -443,9 +557,17 @@
     const progressInner = document.getElementById('progress-inner');
     const userPill = document.getElementById('user-pill');
 
+    const modeToggle = document.getElementById('mode-toggle');
+    const modeHint = document.getElementById('mode-hint');
+    const modeButtons = modeToggle.querySelectorAll('.mode-btn');
+
+    const historyList = document.getElementById('history-list');
+
+    let currentMode = 'calm';
     let timerId = null;
     let totalSeconds = 0;
     let remaining = 0;
+    let history = [];
 
     // Покажем юзера в верхней плашке (если WebApp действительно внутри Telegram)
     try {
@@ -461,6 +583,37 @@
     } catch (e) {
         userPill.textContent = 'Профиль недоступен';
     }
+
+    // ----- Работа с режимами -----
+
+    function applyMode(mode, changeExpiry = true) {
+        currentMode = mode;
+        modeButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+
+        if (mode === 'calm') {
+            modeHint.textContent = 'Спокойный режим — больше времени на решение, меньше шума.';
+            if (changeExpiry) {
+                selectExpiry.value = '3m';
+            }
+        } else {
+            modeHint.textContent = 'Агрессивный режим — короткие сделки и максимум динамики.';
+            if (changeExpiry) {
+                selectExpiry.value = '5s';
+            }
+        }
+    }
+
+    modeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const mode = btn.dataset.mode;
+            applyMode(mode, true);
+            saveState(); // сохраняем выбор
+        });
+    });
+
+    // ----- Таймер -----
 
     function startTimer(seconds) {
         if (timerId) {
@@ -495,6 +648,109 @@
             progressInner.style.width = '0%';
         }
     }
+
+    // ----- История -----
+
+    function addToHistory(entry) {
+        history.unshift(entry);
+        history = history.slice(0, 6);
+        renderHistory();
+    }
+
+    function renderHistory() {
+        if (history.length === 0) {
+            historyList.textContent = 'Пока ещё нет сигналов.';
+            return;
+        }
+
+        historyList.innerHTML = '';
+        history.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'history-item';
+
+            const left = document.createElement('div');
+            left.className = 'history-left';
+
+            const assetEl = document.createElement('div');
+            assetEl.className = 'history-asset';
+            assetEl.textContent = item.asset;
+
+            const expiryEl = document.createElement('div');
+            expiryEl.className = 'history-expiry';
+            expiryEl.textContent = item.expiryLabel + ' · ' + item.modeLabel;
+
+            left.appendChild(assetEl);
+            left.appendChild(expiryEl);
+
+            const right = document.createElement('div');
+            right.className = 'history-right';
+
+            const dirEl = document.createElement('div');
+            dirEl.textContent = item.direction === 'UP' ? 'ВВЕРХ' : 'ВНИЗ';
+            dirEl.className = item.direction === 'UP' ? 'history-dir-up' : 'history-dir-down';
+
+            const timeEl = document.createElement('div');
+            timeEl.className = 'history-time';
+            timeEl.textContent = item.time;
+
+            right.appendChild(dirEl);
+            right.appendChild(timeEl);
+
+            row.appendChild(left);
+            row.appendChild(right);
+
+            historyList.appendChild(row);
+        });
+    }
+
+    function formatTime(date) {
+        const h = String(date.getHours()).padStart(2, '0');
+        const m = String(date.getMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+    }
+
+    // ----- LocalStorage -----
+
+    function saveState() {
+        try {
+            const state = {
+                asset: selectAsset.value,
+                expiryValue: selectExpiry.value,
+                mode: currentMode
+            };
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+            // молча игнорируем, если localStorage недоступен
+        }
+    }
+
+    function loadState() {
+        try {
+            const raw = window.localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            const state = JSON.parse(raw);
+
+            if (state.mode === 'aggressive' || state.mode === 'calm') {
+                applyMode(state.mode, false);
+            } else {
+                applyMode('calm', false);
+            }
+
+            if (state.asset && [...selectAsset.options].some(o => o.value === state.asset)) {
+                selectAsset.value = state.asset;
+            }
+
+            if (state.expiryValue && [...selectExpiry.options].some(o => o.value === state.expiryValue)) {
+                selectExpiry.value = state.expiryValue;
+            }
+        } catch (e) {
+            applyMode('calm', false);
+        }
+    }
+
+    loadState(); // восстановим прошлый выбор
+
+    // ----- Кнопка запуска -----
 
     btnStart.addEventListener('click', () => {
         const asset = selectAsset.value;
@@ -532,10 +788,18 @@
         hintEl.textContent = 'Сигнал получен. Открой сделку у брокера и жди окончания таймера.';
         startTimer(seconds);
 
-        // При желании можно слать данные обратно боту:
-        // if (tg) {
-        //     tg.sendData(JSON.stringify({ asset, seconds, direction }));
-        // }
+        const now = new Date();
+        addToHistory({
+            asset,
+            expiryLabel,
+            direction,
+            modeLabel: currentMode === 'calm' ? 'спокойный' : 'агрессивный',
+            time: formatTime(now)
+        });
+
+        saveState();
+
+        // сюда при желании можно добавить tg.sendData(...)
     });
 </script>
 </body>
