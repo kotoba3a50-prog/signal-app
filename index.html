@@ -5,129 +5,430 @@
     <title>Окно сигналов</title>
     <!-- Скрипт Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        :root {
+            --bg-main: #020617;
+            --bg-card: rgba(15, 23, 42, 0.92);
+            --accent: #22c55e;
+            --accent-soft: rgba(34, 197, 94, 0.15);
+            --danger: #fb7185;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --outline: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             margin: 0;
-            padding: 16px;
-            background: #0b1220;
-            color: #f9fafb;
+            min-height: 100vh;
+            padding: 16px 14px 22px;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.2), transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.2), transparent 60%),
+                var(--bg-main);
+            color: var(--text-main);
         }
-        h1 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            text-align: center;
+
+        .shell {
+            max-width: 480px;
+            margin: 0 auto;
         }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-title span.logo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: radial-gradient(circle, #22c55e, transparent 60%);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+        }
+
+        .user-pill {
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            font-size: 11px;
+            color: var(--text-muted);
+            max-width: 55%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .card {
-            background: #020617;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.8);
-            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 16px 14px 14px;
+            box-shadow:
+                0 18px 45px rgba(15, 23, 42, 0.9),
+                0 0 0 1px rgba(148, 163, 184, 0.18);
+            backdrop-filter: blur(12px);
         }
-        label {
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-header-title {
             font-size: 14px;
-            color: #cbd5f5;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
         }
+
+        .badge-live {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(22, 163, 74, 0.16);
+            color: #bbf7d0;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.9);
+        }
+
+        .field-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .field-row {
+            display: flex;
+            gap: 8px;
+        }
+
         select {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9), #020617);
+            color: var(--text-main);
+            font-size: 13px;
+            appearance: none;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: rgba(34, 197, 94, 0.8);
+            box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
+        .pill {
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.95);
+            font-size: 11px;
+            color: var(--text-muted);
+            border: 1px solid rgba(31, 41, 55, 0.9);
+        }
+
+        #btn-start {
             width: 100%;
             margin-top: 6px;
-            margin-bottom: 12px;
-            padding: 8px;
-            border-radius: 8px;
-            border: none;
-            background: #020617;
-            color: #e5e7eb;
-            outline: 1px solid #1e293b;
-        }
-        button {
-            width: 100%;
-            padding: 10px 14px;
+            padding: 11px 14px;
             border-radius: 999px;
             border: none;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 8px;
-        }
-        #btn-start {
-            background: #22c55e;
+            background: linear-gradient(135deg, #22c55e, #4ade80);
             color: #022c22;
+            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.45);
+            transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, opacity 0.2s;
         }
+
+        #btn-start:active {
+            transform: translateY(1px) scale(0.99);
+            box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35);
+        }
+
         #btn-start:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: default;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.8);
         }
-        .signal-result {
-            text-align: center;
-            margin-top: 8px;
+
+        .result-block {
+            margin-top: 10px;
+            border-radius: 16px;
+            padding: 12px 10px 10px;
+            background: radial-gradient(circle at 0 0, rgba(8, 47, 73, 0.9), rgba(15, 23, 42, 0.96));
+            border: 1px solid rgba(51, 65, 85, 0.9);
+            display: none;
         }
-        .signal-direction {
+
+        .result-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .result-asset {
+            font-weight: 600;
+        }
+
+        .result-expiry {
+            color: var(--text-muted);
+        }
+
+        .result-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .direction-block {
+            flex: 1.1;
+        }
+
+        .direction-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .direction-value {
             font-size: 24px;
             font-weight: 700;
-            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
+        .direction-value span.arrow {
+            font-size: 20px;
+        }
+
         .direction-up {
             color: #4ade80;
         }
+
         .direction-down {
-            color: #f97373;
+            color: #fb7185;
         }
-        .timer {
-            font-size: 32px;
+
+        .timer-shell {
+            flex: 0.9;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .timer-circle {
+            width: 82px;
+            height: 82px;
+            border-radius: 999px;
+            border: 2px solid rgba(148, 163, 184, 0.45);
+            background:
+                radial-gradient(circle at 30% 0%, rgba(56, 189, 248, 0.2), transparent 55%),
+                radial-gradient(circle at 0 100%, rgba(34, 197, 94, 0.25), transparent 60%),
+                rgba(15, 23, 42, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+        }
+
+        .timer-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .timer-value {
+            font-size: 24px;
             font-weight: 700;
-            margin-top: 8px;
+            margin-top: 2px;
         }
-        .hint {
-            font-size: 12px;
-            color: #9ca3af;
+
+        .progress-bar {
             margin-top: 8px;
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            overflow: hidden;
+            border: 1px solid rgba(31, 41, 55, 0.9);
+        }
+
+        .progress-inner {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            transition: width 0.9s linear;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
             text-align: center;
+        }
+
+        .hint strong {
+            color: #e5e7eb;
+        }
+
+        @media (max-width: 360px) {
+            .result-main {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .timer-shell {
+                justify-content: flex-start;
+            }
         }
     </style>
 </head>
 <body>
-<h1>Окно сигналов</h1>
+<div class="shell">
+    <div class="topbar">
+        <div class="app-title">
+            <span class="logo-dot"></span>
+            <span>AISIGNAL</span>
+        </div>
+        <div class="user-pill" id="user-pill">
+            Загрузка профиля…
+        </div>
+    </div>
 
-<div class="card">
-    <label for="asset">Монета / актив</label>
-    <select id="asset">
-        <option value="EURUSD">EURUSD</option>
-        <option value="GBPUSD">GBPUSD</option>
-        <option value="USDJPY">USDJPY</option>
-        <option value="BTCUSDT">BTCUSDT</option>
-        <option value="ETHUSDT">ETHUSDT</option>
-    </select>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-header-title">Сигнальное окно</div>
+            <div class="badge-live">
+                <span class="badge-live-dot"></span>
+                LIVE
+            </div>
+        </div>
 
-    <label for="expiry">Время экспирации</label>
-    <select id="expiry">
-        <option value="5s" data-seconds="5">5 секунд</option>
-        <option value="10s" data-seconds="10">10 секунд</option>
-        <option value="30s" data-seconds="30">30 секунд</option>
-        <option value="1m" data-seconds="60">1 минута</option>
-        <option value="3m" data-seconds="180">3 минуты</option>
-        <option value="5m" data-seconds="300">5 минут</option>
-        <option value="15m" data-seconds="900">15 минут</option>
-    </select>
+        <div class="field-group">
+            <label for="asset">Монета / актив</label>
+            <div class="field-row">
+                <select id="asset">
+                    <option value="EURUSD">EURUSD</option>
+                    <option value="GBPUSD">GBPUSD</option>
+                    <option value="USDJPY">USDJPY</option>
+                    <option value="BTCUSDT">BTCUSDT</option>
+                    <option value="ETHUSDT">ETHUSDT</option>
+                </select>
+            </div>
+            <div class="pill-row">
+                <div class="pill">Выбери инструмент, по которому будешь открывать сделку у брокера.</div>
+            </div>
+        </div>
 
-    <button id="btn-start">Получить прогноз </button>
+        <div class="field-group">
+            <label for="expiry">Время экспирации</label>
+            <div class="field-row">
+                <select id="expiry">
+                    <option value="5s" data-seconds="5">5 секунд</option>
+                    <option value="10s" data-seconds="10">10 секунд</option>
+                    <option value="30s" data-seconds="30">30 секунд</option>
+                    <option value="1m" data-seconds="60">1 минута</option>
+                    <option value="3m" data-seconds="180">3 минуты</option>
+                    <option value="5m" data-seconds="300">5 минут</option>
+                    <option value="15m" data-seconds="900">15 минут</option>
+                </select>
+            </div>
+            <div class="pill-row">
+                <div class="pill">Короткое время — больше динамики, выше шум. Длинное — спокойнее.</div>
+            </div>
+        </div>
 
-    <div class="signal-result" id="signal-block" style="display:none;">
-        <div id="signal-asset"></div>
-        <div id="signal-expiry"></div>
-        <div class="signal-direction" id="signal-direction"></div>
-        <div class="timer" id="timer"></div>
-        <div class="hint" id="hint"></div>
+        <button id="btn-start">Получить прогноз и запустить таймер</button>
+
+        <div class="result-block" id="signal-block">
+            <div class="result-top">
+                <div class="result-asset" id="signal-asset"></div>
+                <div class="result-expiry" id="signal-expiry"></div>
+            </div>
+
+            <div class="result-main">
+                <div class="direction-block">
+                    <div class="direction-label">Прогноз по направлению</div>
+                    <div class="direction-value" id="signal-direction">
+                        <!-- сюда подставим текст и стрелку -->
+                    </div>
+                </div>
+
+                <div class="timer-shell">
+                    <div class="timer-circle">
+                        <div class="timer-label">таймер</div>
+                        <div class="timer-value" id="timer">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-inner" id="progress-inner"></div>
+            </div>
+
+            <div class="hint" id="hint">
+                Здесь будут подсказки по раунду.
+            </div>
+        </div>
+    </div>
+
+    <div class="hint" style="margin-top:10px;">
+        После окончания таймера <strong>начни новый раунд</strong>: заново выбери монету и время.
     </div>
 </div>
 
-<div class="hint">
-    После окончания таймера открой новый раунд: снова выбери монету и время.
-</div>
-
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // разворачиваем приложение по максимуму
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        tg.expand();
+    }
 
     const btnStart = document.getElementById('btn-start');
     const selectAsset = document.getElementById('asset');
@@ -139,30 +440,60 @@
     const signalDirection = document.getElementById('signal-direction');
     const timerEl = document.getElementById('timer');
     const hintEl = document.getElementById('hint');
+    const progressInner = document.getElementById('progress-inner');
+    const userPill = document.getElementById('user-pill');
 
     let timerId = null;
+    let totalSeconds = 0;
     let remaining = 0;
+
+    // Покажем юзера в верхней плашке (если WebApp действительно внутри Telegram)
+    try {
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const u = tg.initDataUnsafe.user;
+            const name = (u.username && '@' + u.username) ||
+                         [u.first_name, u.last_name].filter(Boolean).join(' ') ||
+                         ('ID ' + u.id);
+            userPill.textContent = name;
+        } else {
+            userPill.textContent = 'Локальный режим';
+        }
+    } catch (e) {
+        userPill.textContent = 'Профиль недоступен';
+    }
 
     function startTimer(seconds) {
         if (timerId) {
             clearInterval(timerId);
         }
+        totalSeconds = seconds;
         remaining = seconds;
-        timerEl.textContent = remaining;
-        hintEl.textContent = 'Таймер запущен. Отыграйте сделку у брокера.';
+        updateTimerUI();
+
         timerId = setInterval(() => {
             remaining -= 1;
             if (remaining <= 0) {
                 clearInterval(timerId);
                 timerId = null;
-                timerEl.textContent = '0';
-                hintEl.textContent = 'Раунд завершён. Открой новый раунд: заново выбери монету и время.';
+                remaining = 0;
+                updateTimerUI();
+                hintEl.textContent = 'Раунд завершён. Проверь результат у брокера и при желании начни новый.';
                 btnStart.disabled = false;
                 btnStart.textContent = 'Новый раунд';
             } else {
-                timerEl.textContent = remaining;
+                updateTimerUI();
             }
         }, 1000);
+    }
+
+    function updateTimerUI() {
+        timerEl.textContent = remaining.toString();
+        if (totalSeconds > 0) {
+            const progress = ((totalSeconds - remaining) / totalSeconds) * 100;
+            progressInner.style.width = progress.toFixed(0) + '%';
+        } else {
+            progressInner.style.width = '0%';
+        }
     }
 
     btnStart.addEventListener('click', () => {
@@ -174,21 +505,38 @@
         // Генерация "прогноза" вверх/вниз
         const direction = Math.random() < 0.5 ? 'UP' : 'DOWN';
 
-        signalAsset.textContent = 'Монета: ' + asset;
-        signalExpiry.textContent = 'Время: ' + expiryLabel;
-        signalDirection.textContent = direction === 'UP' ? 'ВВЕРХ' : 'ВНИЗ';
-        signalDirection.className = 'signal-direction ' + (direction === 'UP' ? 'direction-up' : 'direction-down');
+        signalAsset.textContent = asset;
+        signalExpiry.textContent = expiryLabel;
+
+        const arrow = direction === 'UP' ? '↑' : '↓';
+        const text = direction === 'UP' ? 'ВВЕРХ' : 'ВНИЗ';
+
+        signalDirection.innerHTML = '';
+        const arrowSpan = document.createElement('span');
+        arrowSpan.className = 'arrow';
+        arrowSpan.textContent = arrow;
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = text;
+
+        signalDirection.appendChild(arrowSpan);
+        signalDirection.appendChild(textSpan);
+
+        signalDirection.className =
+            'direction-value ' + (direction === 'UP' ? 'direction-up' : 'direction-down');
 
         signalBlock.style.display = 'block';
         btnStart.disabled = true;
-        btnStart.textContent = 'Таймер идёт...';
+        btnStart.textContent = 'Таймер идёт…';
 
+        hintEl.textContent = 'Сигнал получен. Открой сделку у брокера и жди окончания таймера.';
         startTimer(seconds);
 
-        // Если захочешь слать данные обратно боту — можно отправить так:
-        // tg.sendData(JSON.stringify({ asset, seconds, direction }));
+        // При желании можно слать данные обратно боту:
+        // if (tg) {
+        //     tg.sendData(JSON.stringify({ asset, seconds, direction }));
+        // }
     });
 </script>
 </body>
 </html>
-
