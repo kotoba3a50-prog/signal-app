@@ -191,6 +191,7 @@
             min-width: 0;
         }
 
+        /* ОБНОВЛЁННЫЕ ИКОНКИ-МОНЕТКИ */
         .dropdown-icon {
             width: 22px;
             height: 22px;
@@ -198,10 +199,30 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             color: #020617;
             flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            background-color: #0f172a;
+            box-shadow:
+                0 0 0 1px rgba(15, 23, 42, 0.9),
+                0 6px 12px rgba(15, 23, 42, 0.9);
+        }
+
+        .dropdown-icon::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(
+                circle at 30% 0%,
+                rgba(255, 255, 255, 0.45),
+                rgba(255, 255, 255, 0) 60%
+            );
+            opacity: 0.9;
         }
 
         .dropdown-labels {
@@ -1037,16 +1058,22 @@
 
     document.addEventListener('click', () => closeAllDropdowns());
 
+    // ОБНОВЛЁННАЯ ФУНКЦИЯ ДЛЯ АКТИВА
     function pickAssetFromItem(item) {
         const symbol = item.dataset.symbol;
         const name = item.dataset.name;
         const iconChar = item.dataset.icon || symbol[0];
-        const color = item.querySelector('.dropdown-icon').style.backgroundColor || '#1f2937';
+
+        const iconEl = item.querySelector('.dropdown-icon');
+        const colorFromData = item.dataset.color;
+        const colorFromStyle = iconEl ? iconEl.style.backgroundColor : '';
+        const color = colorFromData || colorFromStyle || '#1f2937';
 
         currentAsset = { symbol, name };
 
         assetIcon.textContent = iconChar.length > 2 ? iconChar[0] : iconChar;
         assetIcon.style.backgroundColor = color;
+
         assetLabelMain.textContent = symbol;
         assetLabelSub.textContent = name;
 
@@ -1065,7 +1092,6 @@
 
         expiryLabelMain.textContent = label;
         expiryLabelSub.textContent = sub || '';
-        // иконка у всех одинаковая ⏱, цвет берём с элемента
         expiryIcon.style.backgroundColor =
             item.querySelector('.dropdown-icon').style.backgroundColor || '#1d4ed8';
 
@@ -1207,12 +1233,11 @@
     }
 
     function loadState() {
-        // базовый дефолт
         applyMode('calm', false);
-        // первая монета в списке
+
         const firstAsset = assetMenu.querySelector('.dropdown-item');
         if (firstAsset) pickAssetFromItem(firstAsset);
-        // первый таймфрейм
+
         const firstExpiry = expiryMenu.querySelector('.dropdown-item');
         if (firstExpiry) pickExpiryFromItem(firstExpiry);
 
@@ -1280,7 +1305,6 @@
         });
 
         saveState();
-        // при желании сюда можно добавить tg.sendData(...)
     });
 </script>
 </body>
