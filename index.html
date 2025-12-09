@@ -191,7 +191,6 @@
             min-width: 0;
         }
 
-        /* ОБНОВЛЁННЫЕ ИКОНКИ-МОНЕТКИ */
         .dropdown-icon {
             width: 22px;
             height: 22px;
@@ -199,30 +198,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #020617;
             flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-            background-color: #0f172a;
-            box-shadow:
-                0 0 0 1px rgba(15, 23, 42, 0.9),
-                0 6px 12px rgba(15, 23, 42, 0.9);
-        }
-
-        .dropdown-icon::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            pointer-events: none;
-            background: radial-gradient(
-                circle at 30% 0%,
-                rgba(255, 255, 255, 0.45),
-                rgba(255, 255, 255, 0) 60%
-            );
-            opacity: 0.9;
+            box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
         }
 
         .dropdown-labels {
@@ -262,10 +242,10 @@
             border-radius: 12px;
             border: 1px solid rgba(55, 65, 81, 0.95);
             box-shadow: 0 14px 36px rgba(15, 23, 42, 0.95);
-            max-height: 230px;
+            max-height: 260px;
             overflow-y: auto;
             z-index: 20;
-            padding: 4px;
+            padding: 4px 4px 6px;
             display: none;
         }
 
@@ -320,6 +300,16 @@
             width: 20px;
             height: 20px;
             font-size: 12px;
+        }
+
+        /* Заголовки секций в меню активов (как темы на сайте) */
+        .dropdown-section-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-muted);
+            padding: 4px 6px 2px;
+            margin-top: 4px;
         }
 
         #btn-start {
@@ -547,15 +537,20 @@
                     <div class="dropdown-left">
                         <div class="dropdown-icon" id="asset-icon">₿</div>
                         <div class="dropdown-labels">
-                            <div class="dropdown-main" id="asset-label-main">BTCUSDT</div>
-                            <div class="dropdown-sub" id="asset-label-sub">Bitcoin</div>
+                            <div class="dropdown-main" id="asset-label-main">EURUSD</div>
+                            <div class="dropdown-sub" id="asset-label-sub">Евро / Доллар</div>
                         </div>
                     </div>
                     <div class="dropdown-caret">▾</div>
                 </button>
+
+                <!-- МЕНЮ АКТИВОВ -->
                 <div class="dropdown-menu" id="asset-menu">
-                    <!-- Forex -->
-                    <div class="dropdown-item" data-symbol="EURUSD" data-name="EUR / USD" data-icon="FX" data-color="#38bdf8">
+
+                    <!-- FOREX -->
+                    <div class="dropdown-section-title">Forex — валютные пары</div>
+
+                    <div class="dropdown-item" data-symbol="EURUSD" data-name="Евро / Доллар" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#38bdf8;">FX</div>
                             <div>
@@ -565,7 +560,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="GBPUSD" data-name="GBP / USD" data-icon="FX" data-color="#6366f1">
+
+                    <div class="dropdown-item" data-symbol="GBPUSD" data-name="Фунт / Доллар" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#6366f1;">FX</div>
                             <div>
@@ -575,7 +571,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="USDJPY" data-name="USD / JPY" data-icon="FX" data-color="#0ea5e9">
+
+                    <div class="dropdown-item" data-symbol="USDJPY" data-name="Доллар / Иена" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#0ea5e9;">FX</div>
                             <div>
@@ -585,7 +582,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="USDCHF" data-name="USD / CHF" data-icon="FX" data-color="#14b8a6">
+
+                    <div class="dropdown-item" data-symbol="USDCHF" data-name="Доллар / Франк" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#14b8a6;">FX</div>
                             <div>
@@ -595,7 +593,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="USDCAD" data-name="USD / CAD" data-icon="FX" data-color="#22c55e">
+
+                    <div class="dropdown-item" data-symbol="USDCAD" data-name="Доллар / Канадец" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#22c55e;">FX</div>
                             <div>
@@ -605,7 +604,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="AUDUSD" data-name="AUD / USD" data-icon="FX" data-color="#eab308">
+
+                    <div class="dropdown-item" data-symbol="AUDUSD" data-name="Австралиец / Доллар" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#eab308;">FX</div>
                             <div>
@@ -615,7 +615,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="NZDUSD" data-name="NZD / USD" data-icon="FX" data-color="#f97316">
+
+                    <div class="dropdown-item" data-symbol="NZDUSD" data-name="Новозеландец / Доллар" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#f97316;">FX</div>
                             <div>
@@ -625,7 +626,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="EURJPY" data-name="EUR / JPY" data-icon="FX" data-color="#f97316">
+
+                    <div class="dropdown-item" data-symbol="EURJPY" data-name="Евро / Иена" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#f97316;">FX</div>
                             <div>
@@ -635,7 +637,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="EURGBP" data-name="EUR / GBP" data-icon="FX" data-color="#ec4899">
+
+                    <div class="dropdown-item" data-symbol="EURGBP" data-name="Евро / Фунт" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#ec4899;">FX</div>
                             <div>
@@ -645,7 +648,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="EURCHF" data-name="EUR / CHF" data-icon="FX" data-color="#a855f7">
+
+                    <div class="dropdown-item" data-symbol="EURCHF" data-name="Евро / Франк" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#a855f7;">FX</div>
                             <div>
@@ -655,7 +659,8 @@
                         </div>
                         <div class="dropdown-item-right">Forex</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="GBPJPY" data-name="GBP / JPY" data-icon="FX" data-color="#22d3ee">
+
+                    <div class="dropdown-item" data-symbol="GBPJPY" data-name="Фунт / Иена" data-icon="FX">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#22d3ee;">FX</div>
                             <div>
@@ -666,8 +671,10 @@
                         <div class="dropdown-item-right">Forex</div>
                     </div>
 
-                    <!-- Metals -->
-                    <div class="dropdown-item" data-symbol="XAUUSD" data-name="Gold" data-icon="Au" data-color="#fbbf24">
+                    <!-- METALS -->
+                    <div class="dropdown-section-title">Металлы</div>
+
+                    <div class="dropdown-item" data-symbol="XAUUSD" data-name="Золото" data-icon="Au">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#fbbf24;">Au</div>
                             <div>
@@ -677,7 +684,8 @@
                         </div>
                         <div class="dropdown-item-right">Metal</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="XAGUSD" data-name="Silver" data-icon="Ag" data-color="#9ca3af">
+
+                    <div class="dropdown-item" data-symbol="XAGUSD" data-name="Серебро" data-icon="Ag">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#9ca3af;">Ag</div>
                             <div>
@@ -688,87 +696,257 @@
                         <div class="dropdown-item-right">Metal</div>
                     </div>
 
-                    <!-- Crypto -->
-                    <div class="dropdown-item" data-symbol="BTCUSDT" data-name="Bitcoin" data-icon="₿" data-color="#f7931a">
+                    <!-- КРИПТА 1: ОСНОВНЫЕ МОНЕТЫ -->
+                    <div class="dropdown-section-title">Криптовалюты — основные</div>
+
+                    <div class="dropdown-item" data-symbol="Bitcoin" data-name="Bitcoin" data-icon="₿">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#f7931a;">₿</div>
                             <div>
-                                <div class="dropdown-item-main">BTCUSDT</div>
-                                <div class="dropdown-item-sub">Bitcoin</div>
+                                <div class="dropdown-item-main">Bitcoin</div>
+                                <div class="dropdown-item-sub">Биткоин</div>
                             </div>
                         </div>
                         <div class="dropdown-item-right">Crypto</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="ETHUSDT" data-name="Ethereum" data-icon="Ξ" data-color="#6366f1">
+
+                    <div class="dropdown-item" data-symbol="Ethereum" data-name="Ethereum" data-icon="Ξ">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#6366f1;">Ξ</div>
                             <div>
-                                <div class="dropdown-item-main">ETHUSDT</div>
-                                <div class="dropdown-item-sub">Ethereum</div>
+                                <div class="dropdown-item-main">Ethereum</div>
+                                <div class="dropdown-item-sub">Эфириум</div>
                             </div>
                         </div>
                         <div class="dropdown-item-right">Crypto</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="BNBUSDT" data-name="BNB" data-icon="BNB" data-color="#facc15">
+
+                    <div class="dropdown-item" data-symbol="Dash" data-name="Dash" data-icon="D">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#0ea5e9;">D</div>
+                            <div>
+                                <div class="dropdown-item-main">Dash</div>
+                                <div class="dropdown-item-sub">Dash</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto</div>
+                    </div>
+
+                    <!-- КРИПТА 2: OTC-МОНЕТЫ -->
+                    <div class="dropdown-section-title">Криптовалюты — OTC</div>
+
+                    <div class="dropdown-item" data-symbol="Chainlink OTC" data-name="Chainlink OTC" data-icon="L">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#2a5ada;">L</div>
+                            <div>
+                                <div class="dropdown-item-main">Chainlink OTC</div>
+                                <div class="dropdown-item-sub">Chainlink</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="BNB OTC" data-name="BNB OTC" data-icon="B">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#facc15;">B</div>
                             <div>
-                                <div class="dropdown-item-main">BNBUSDT</div>
+                                <div class="dropdown-item-main">BNB OTC</div>
                                 <div class="dropdown-item-sub">BNB</div>
                             </div>
                         </div>
-                        <div class="dropdown-item-right">Crypto</div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="SOLUSDT" data-name="Solana" data-icon="SOL" data-color="#22c55e">
+
+                    <div class="dropdown-item" data-symbol="Bitcoin OTC" data-name="Bitcoin OTC" data-icon="₿">
                         <div class="dropdown-item-left">
-                            <div class="dropdown-icon" style="background:#22c55e;">S</div>
+                            <div class="dropdown-icon" style="background:#f97316;">₿</div>
                             <div>
-                                <div class="dropdown-item-main">SOLUSDT</div>
-                                <div class="dropdown-item-sub">Solana</div>
+                                <div class="dropdown-item-main">Bitcoin OTC</div>
+                                <div class="dropdown-item-sub">Bitcoin OTC</div>
                             </div>
                         </div>
-                        <div class="dropdown-item-right">Crypto</div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="XRPUSDT" data-name="XRP" data-icon="XRP" data-color="#22d3ee">
+
+                    <div class="dropdown-item" data-symbol="Avalanche OTC" data-name="Avalanche OTC" data-icon="Av">
                         <div class="dropdown-item-left">
-                            <div class="dropdown-icon" style="background:#22d3ee;">X</div>
+                            <div class="dropdown-icon" style="background:#ef4444;">Av</div>
                             <div>
-                                <div class="dropdown-item-main">XRPUSDT</div>
-                                <div class="dropdown-item-sub">XRP</div>
+                                <div class="dropdown-item-main">Avalanche OTC</div>
+                                <div class="dropdown-item-sub">Avalanche</div>
                             </div>
                         </div>
-                        <div class="dropdown-item-right">Crypto</div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="LTCUSDT" data-name="Litecoin" data-icon="Ł" data-color="#9ca3af">
+
+                    <div class="dropdown-item" data-symbol="Bitcoin ETF OTC" data-name="Bitcoin ETF OTC" data-icon="Et">
                         <div class="dropdown-item-left">
-                            <div class="dropdown-icon" style="background:#9ca3af;">Ł</div>
+                            <div class="dropdown-icon" style="background:#22c55e;">Et</div>
                             <div>
-                                <div class="dropdown-item-main">LTCUSDT</div>
-                                <div class="dropdown-item-sub">Litecoin</div>
+                                <div class="dropdown-item-main">Bitcoin ETF OTC</div>
+                                <div class="dropdown-item-sub">Bitcoin ETF</div>
                             </div>
                         </div>
-                        <div class="dropdown-item-right">Crypto</div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="DOGEUSDT" data-name="Dogecoin" data-icon="Ð" data-color="#facc15">
+
+                    <div class="dropdown-item" data-symbol="Dogecoin OTC" data-name="Dogecoin OTC" data-icon="Ð">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#facc15;">Ð</div>
                             <div>
-                                <div class="dropdown-item-main">DOGEUSDT</div>
+                                <div class="dropdown-item-main">Dogecoin OTC</div>
                                 <div class="dropdown-item-sub">Dogecoin</div>
                             </div>
                         </div>
-                        <div class="dropdown-item-right">Crypto</div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
-                    <div class="dropdown-item" data-symbol="TONUSDT" data-name="Toncoin" data-icon="TON" data-color="#0ea5e9">
+
+                    <div class="dropdown-item" data-symbol="Polkadot OTC" data-name="Polkadot OTC" data-icon="●">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#ec4899;">●</div>
+                            <div>
+                                <div class="dropdown-item-main">Polkadot OTC</div>
+                                <div class="dropdown-item-sub">Polkadot</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="Polygon OTC" data-name="Polygon OTC" data-icon="M">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#a855f7;">M</div>
+                            <div>
+                                <div class="dropdown-item-main">Polygon OTC</div>
+                                <div class="dropdown-item-sub">Polygon</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="Solana OTC" data-name="Solana OTC" data-icon="S">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#22c55e;">S</div>
+                            <div>
+                                <div class="dropdown-item-main">Solana OTC</div>
+                                <div class="dropdown-item-sub">Solana</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="Toncoin OTC" data-name="Toncoin OTC" data-icon="T">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#0ea5e9;">T</div>
                             <div>
-                                <div class="dropdown-item-main">TONUSDT</div>
+                                <div class="dropdown-item-main">Toncoin OTC</div>
                                 <div class="dropdown-item-sub">Toncoin</div>
                             </div>
                         </div>
-                        <div class="dropdown-item-right">Crypto</div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
+
+                    <div class="dropdown-item" data-symbol="TRON OTC" data-name="TRON OTC" data-icon="Tr">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#f97316;">Tr</div>
+                            <div>
+                                <div class="dropdown-item-main">TRON OTC</div>
+                                <div class="dropdown-item-sub">TRON</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="Cardano OTC" data-name="Cardano OTC" data-icon="A">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#38bdf8;">A</div>
+                            <div>
+                                <div class="dropdown-item-main">Cardano OTC</div>
+                                <div class="dropdown-item-sub">Cardano</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="Litecoin OTC" data-name="Litecoin OTC" data-icon="Ł">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#9ca3af;">Ł</div>
+                            <div>
+                                <div class="dropdown-item-main">Litecoin OTC</div>
+                                <div class="dropdown-item-sub">Litecoin</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="Ethereum OTC" data-name="Ethereum OTC" data-icon="Ξ">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#4f46e5;">Ξ</div>
+                            <div>
+                                <div class="dropdown-item-main">Ethereum OTC</div>
+                                <div class="dropdown-item-sub">Ethereum OTC</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto OTC</div>
+                    </div>
+
+                    <!-- КРИПТА 3: ПАРЫ К ФИАТУ -->
+                    <div class="dropdown-section-title">Крипта — пары к фиату</div>
+
+                    <div class="dropdown-item" data-symbol="BCH/EUR" data-name="Bitcoin Cash / EUR" data-icon="BCH">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#16a34a;">BC</div>
+                            <div>
+                                <div class="dropdown-item-main">BCH/EUR</div>
+                                <div class="dropdown-item-sub">Bitcoin Cash / Евро</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto/FX</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="BCH/GBP" data-name="Bitcoin Cash / GBP" data-icon="BCH">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#15803d;">BC</div>
+                            <div>
+                                <div class="dropdown-item-main">BCH/GBP</div>
+                                <div class="dropdown-item-sub">Bitcoin Cash / Фунт</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto/FX</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="BCH/JPY" data-name="Bitcoin Cash / JPY" data-icon="BCH">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#22c55e;">BC</div>
+                            <div>
+                                <div class="dropdown-item-main">BCH/JPY</div>
+                                <div class="dropdown-item-sub">Bitcoin Cash / Иена</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto/FX</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="BTC/GBP" data-name="Bitcoin / GBP" data-icon="₿">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#ea580c;">₿</div>
+                            <div>
+                                <div class="dropdown-item-main">BTC/GBP</div>
+                                <div class="dropdown-item-sub">Bitcoin / Фунт</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto/FX</div>
+                    </div>
+
+                    <div class="dropdown-item" data-symbol="BTC/JPY" data-name="Bitcoin / JPY" data-icon="₿">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#c2410c;">₿</div>
+                            <div>
+                                <div class="dropdown-item-main">BTC/JPY</div>
+                                <div class="dropdown-item-sub">Bitcoin / Иена</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">Crypto/FX</div>
+                    </div>
+
                 </div>
             </div>
             <div class="pill-row">
@@ -1058,22 +1236,17 @@
 
     document.addEventListener('click', () => closeAllDropdowns());
 
-    // ОБНОВЛЁННАЯ ФУНКЦИЯ ДЛЯ АКТИВА
     function pickAssetFromItem(item) {
         const symbol = item.dataset.symbol;
         const name = item.dataset.name;
         const iconChar = item.dataset.icon || symbol[0];
-
         const iconEl = item.querySelector('.dropdown-icon');
-        const colorFromData = item.dataset.color;
-        const colorFromStyle = iconEl ? iconEl.style.backgroundColor : '';
-        const color = colorFromData || colorFromStyle || '#1f2937';
+        const color = iconEl ? iconEl.style.backgroundColor : '#1f2937';
 
         currentAsset = { symbol, name };
 
         assetIcon.textContent = iconChar.length > 2 ? iconChar[0] : iconChar;
         assetIcon.style.backgroundColor = color;
-
         assetLabelMain.textContent = symbol;
         assetLabelSub.textContent = name;
 
@@ -1092,6 +1265,7 @@
 
         expiryLabelMain.textContent = label;
         expiryLabelSub.textContent = sub || '';
+        // иконка у всех одинаковая ⏱, цвет берём с элемента
         expiryIcon.style.backgroundColor =
             item.querySelector('.dropdown-icon').style.backgroundColor || '#1d4ed8';
 
@@ -1233,11 +1407,12 @@
     }
 
     function loadState() {
+        // базовый дефолт
         applyMode('calm', false);
-
+        // первый актив в списке
         const firstAsset = assetMenu.querySelector('.dropdown-item');
         if (firstAsset) pickAssetFromItem(firstAsset);
-
+        // первый таймфрейм
         const firstExpiry = expiryMenu.querySelector('.dropdown-item');
         if (firstExpiry) pickExpiryFromItem(firstExpiry);
 
@@ -1305,7 +1480,9 @@
         });
 
         saveState();
+        // сюда можно добавить tg.sendData(...) если нужно
     });
 </script>
 </body>
 </html>
+
