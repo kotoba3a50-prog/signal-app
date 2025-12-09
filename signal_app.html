@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Окно сигналов</title>
+    <!-- Скрипт Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: #0b1220;
+            color: #f9fafb;
+        }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .card {
+            background: #020617;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.8);
+            margin-bottom: 16px;
+        }
+        label {
+            font-size: 14px;
+            color: #cbd5f5;
+        }
+        select {
+            width: 100%;
+            margin-top: 6px;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            background: #020617;
+            color: #e5e7eb;
+            outline: 1px solid #1e293b;
+        }
+        button {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        #btn-start {
+            background: #22c55e;
+            color: #022c22;
+        }
+        #btn-start:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+        .signal-result {
+            text-align: center;
+            margin-top: 8px;
+        }
+        .signal-direction {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 4px 0;
+        }
+        .direction-up {
+            color: #4ade80;
+        }
+        .direction-down {
+            color: #f97373;
+        }
+        .timer {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .hint {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h1>Окно сигналов</h1>
+
+<div class="card">
+    <label for="asset">Монета / актив</label>
+    <select id="asset">
+        <option value="EURUSD">EURUSD</option>
+        <option value="GBPUSD">GBPUSD</option>
+        <option value="USDJPY">USDJPY</option>
+        <option value="BTCUSDT">BTCUSDT</option>
+        <option value="ETHUSDT">ETHUSDT</option>
+    </select>
+
+    <label for="expiry">Время экспирации</label>
+    <select id="expiry">
+        <option value="5s" data-seconds="5">5 секунд</option>
+        <option value="10s" data-seconds="10">10 секунд</option>
+        <option value="30s" data-seconds="30">30 секунд</option>
+        <option value="1m" data-seconds="60">1 минута</option>
+        <option value="3m" data-seconds="180">3 минуты</option>
+        <option value="5m" data-seconds="300">5 минут</option>
+        <option value="15m" data-seconds="900">15 минут</option>
+    </select>
+
+    <button id="btn-start">Получить прогноз и запустить таймер</button>
+
+    <div class="signal-result" id="signal-block" style="display:none;">
+        <div id="signal-asset"></div>
+        <div id="signal-expiry"></div>
+        <div class="signal-direction" id="signal-direction"></div>
+        <div class="timer" id="timer"></div>
+        <div class="hint" id="hint"></div>
+    </div>
+</div>
+
+<div class="hint">
+    После окончания таймера открой новый раунд: снова выбери монету и время.
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // разворачиваем приложение по максимуму
+
+    const btnStart = document.getElementById('btn-start');
+    const selectAsset = document.getElementById('asset');
+    const selectExpiry = document.getElementById('expiry');
+
+    const signalBlock = document.getElementById('signal-block');
+    const signalAsset = document.getElementById('signal-asset');
+    const signalExpiry = document.getElementById('signal-expiry');
+    const signalDirection = document.getElementById('signal-direction');
+    const timerEl = document.getElementById('timer');
+    const hintEl = document.getElementById('hint');
+
+    let timerId = null;
+    let remaining = 0;
+
+    function startTimer(seconds) {
+        if (timerId) {
+            clearInterval(timerId);
+        }
+        remaining = seconds;
+        timerEl.textContent = remaining;
+        hintEl.textContent = 'Таймер запущен. Отыграйте сделку у брокера.';
+        timerId = setInterval(() => {
+            remaining -= 1;
+            if (remaining <= 0) {
+                clearInterval(timerId);
+                timerId = null;
+                timerEl.textContent = '0';
+                hintEl.textContent = 'Раунд завершён. Открой новый раунд: заново выбери монету и время.';
+                btnStart.disabled = false;
+                btnStart.textContent = 'Новый раунд';
+            } else {
+                timerEl.textContent = remaining;
+            }
+        }, 1000);
+    }
+
+    btnStart.addEventListener('click', () => {
+        const asset = selectAsset.value;
+        const expiryOption = selectExpiry.options[selectExpiry.selectedIndex];
+        const seconds = parseInt(expiryOption.dataset.seconds, 10);
+        const expiryLabel = expiryOption.textContent;
+
+        // Генерация "прогноза" вверх/вниз
+        const direction = Math.random() < 0.5 ? 'UP' : 'DOWN';
+
+        signalAsset.textContent = 'Монета: ' + asset;
+        signalExpiry.textContent = 'Время: ' + expiryLabel;
+        signalDirection.textContent = direction === 'UP' ? 'ВВЕРХ' : 'ВНИЗ';
+        signalDirection.className = 'signal-direction ' + (direction === 'UP' ? 'direction-up' : 'direction-down');
+
+        signalBlock.style.display = 'block';
+        btnStart.disabled = true;
+        btnStart.textContent = 'Таймер идёт...';
+
+        startTimer(seconds);
+
+        // Если захочешь слать данные обратно боту — можно отправить так:
+        // tg.sendData(JSON.stringify({ asset, seconds, direction }));
+    });
+</script>
+</body>
+</html>
