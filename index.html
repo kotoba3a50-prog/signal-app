@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Окно сигналов</title>
+    <title>AISIGNAL – Signal Window</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -39,6 +39,12 @@
             margin-bottom: 14px;
         }
 
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .app-title {
             font-size: 18px;
             font-weight: 700;
@@ -54,6 +60,7 @@
             border-radius: 999px;
             background: radial-gradient(circle, #22c55e, transparent 60%);
             box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+            animation: logoPulse 2s ease-in-out infinite;
         }
 
         .user-pill {
@@ -66,6 +73,37 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        /* Переключатель языка */
+        .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(31, 41, 55, 0.9);
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .lang-btn .flag { font-size: 13px; }
+        .lang-btn .lang-label { text-transform: uppercase; }
+
+        .lang-btn.active {
+            background: rgba(15, 23, 42, 0.9);
+            color: #e5e7eb;
         }
 
         .card {
@@ -101,6 +139,10 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            position: relative;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            animation: liveTextGlow 1.4s ease-in-out infinite;
         }
 
         .badge-live-dot {
@@ -109,6 +151,7 @@
             border-radius: 999px;
             background: #22c55e;
             box-shadow: 0 0 6px rgba(34, 197, 94, 0.9);
+            animation: livePulse 1.4s ease-in-out infinite;
         }
 
         .field-group { margin-bottom: 10px; }
@@ -163,7 +206,7 @@
             box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.7);
         }
 
-        /* Кастомные dropdown’ы */
+        /* Dropdown’ы */
 
         .dropdown {
             position: relative;
@@ -302,7 +345,7 @@
             font-size: 12px;
         }
 
-        /* Заголовки секций в меню активов (как темы на сайте) */
+        /* Заголовки секций в меню активов */
         .dropdown-section-title {
             font-size: 10px;
             text-transform: uppercase;
@@ -494,6 +537,58 @@
             .result-main { flex-direction: column; align-items: stretch; }
             .timer-shell { justify-content: flex-start; }
         }
+
+        /* Анимации для точек и LIVE */
+        @keyframes logoPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+                box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+            }
+        }
+
+        @keyframes livePulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.9;
+                box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 1;
+                box-shadow: 0 0 18px rgba(34, 197, 94, 1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+                box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+            }
+        }
+
+        @keyframes liveTextGlow {
+            0% {
+                color: #bbf7d0;
+                text-shadow: 0 0 4px rgba(34, 197, 94, 0.4);
+            }
+            50% {
+                color: #dcfce7;
+                text-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+            }
+            100% {
+                color: #bbf7d0;
+                text-shadow: 0 0 4px rgba(34, 197, 94, 0.4);
+            }
+        }
     </style>
 </head>
 <body>
@@ -503,21 +598,33 @@
             <span class="logo-dot"></span>
             <span>AISIGNAL</span>
         </div>
-        <div class="user-pill" id="user-pill">Загрузка профиля…</div>
+        <div class="topbar-right">
+            <div class="user-pill" id="user-pill">Загрузка профиля…</div>
+            <div class="lang-switch" id="lang-switch">
+                <button type="button" class="lang-btn active" data-lang="ru">
+                    <span class="flag">🇷🇺</span>
+                    <span class="lang-label">RU</span>
+                </button>
+                <button type="button" class="lang-btn" data-lang="en">
+                    <span class="flag">🇺🇸</span>
+                    <span class="lang-label">EN</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="card">
         <div class="card-header">
-            <div class="card-header-title">Сигнальное окно</div>
+            <div class="card-header-title" id="card-header-title">Сигнальное окно</div>
             <div class="badge-live">
                 <span class="badge-live-dot"></span>
-                LIVE
+                <span id="live-text">LIVE</span>
             </div>
         </div>
 
         <!-- Режим -->
         <div class="field-group">
-            <label>Режим торговли</label>
+            <label id="mode-label">Режим торговли</label>
             <div class="mode-toggle" id="mode-toggle">
                 <button type="button" class="mode-btn active" data-mode="calm">Спокойный</button>
                 <button type="button" class="mode-btn" data-mode="aggressive">Агрессивный</button>
@@ -531,7 +638,7 @@
 
         <!-- Монета / актив -->
         <div class="field-group">
-            <label>Монета / актив</label>
+            <label id="asset-label">Монета / актив</label>
             <div class="dropdown" id="asset-dropdown">
                 <button class="dropdown-toggle" id="asset-toggle" type="button">
                     <div class="dropdown-left">
@@ -548,7 +655,7 @@
                 <div class="dropdown-menu" id="asset-menu">
 
                     <!-- FOREX -->
-                    <div class="dropdown-section-title">Forex — валютные пары</div>
+                    <div class="dropdown-section-title" id="sec-forex">Forex — валютные пары</div>
 
                     <div class="dropdown-item" data-symbol="EURUSD" data-name="Евро / Доллар" data-icon="FX">
                         <div class="dropdown-item-left">
@@ -672,7 +779,7 @@
                     </div>
 
                     <!-- METALS -->
-                    <div class="dropdown-section-title">Металлы</div>
+                    <div class="dropdown-section-title" id="sec-metals">Металлы</div>
 
                     <div class="dropdown-item" data-symbol="XAUUSD" data-name="Золото" data-icon="Au">
                         <div class="dropdown-item-left">
@@ -697,9 +804,9 @@
                     </div>
 
                     <!-- КРИПТА 1: ОСНОВНЫЕ МОНЕТЫ -->
-                    <div class="dropdown-section-title">Криптовалюты — основные</div>
+                    <div class="dropdown-section-title" id="sec-crypto-main">Криптовалюты — основные</div>
 
-                    <div class="dropdown-item" data-symbol="Bitcoin" data-name="Bitcoin" data-icon="₿">
+                    <div class="dropdown-item" data-symbol="Bitcoin" data-name="Биткоин" data-icon="₿">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#f7931a;">₿</div>
                             <div>
@@ -710,7 +817,7 @@
                         <div class="dropdown-item-right">Crypto</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Ethereum" data-name="Ethereum" data-icon="Ξ">
+                    <div class="dropdown-item" data-symbol="Ethereum" data-name="Эфириум" data-icon="Ξ">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#6366f1;">Ξ</div>
                             <div>
@@ -733,9 +840,9 @@
                     </div>
 
                     <!-- КРИПТА 2: OTC-МОНЕТЫ -->
-                    <div class="dropdown-section-title">Криптовалюты — OTC</div>
+                    <div class="dropdown-section-title" id="sec-crypto-otc">Криптовалюты — OTC</div>
 
-                    <div class="dropdown-item" data-symbol="Chainlink OTC" data-name="Chainlink OTC" data-icon="L">
+                    <div class="dropdown-item" data-symbol="Chainlink OTC" data-name="Chainlink" data-icon="L">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#2a5ada;">L</div>
                             <div>
@@ -746,7 +853,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="BNB OTC" data-name="BNB OTC" data-icon="B">
+                    <div class="dropdown-item" data-symbol="BNB OTC" data-name="BNB" data-icon="B">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#facc15;">B</div>
                             <div>
@@ -768,7 +875,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Avalanche OTC" data-name="Avalanche OTC" data-icon="Av">
+                    <div class="dropdown-item" data-symbol="Avalanche OTC" data-name="Avalanche" data-icon="Av">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#ef4444;">Av</div>
                             <div>
@@ -779,7 +886,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Bitcoin ETF OTC" data-name="Bitcoin ETF OTC" data-icon="Et">
+                    <div class="dropdown-item" data-symbol="Bitcoin ETF OTC" data-name="Bitcoin ETF" data-icon="Et">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#22c55e;">Et</div>
                             <div>
@@ -790,7 +897,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Dogecoin OTC" data-name="Dogecoin OTC" data-icon="Ð">
+                    <div class="dropdown-item" data-symbol="Dogecoin OTC" data-name="Dogecoin" data-icon="Ð">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#facc15;">Ð</div>
                             <div>
@@ -801,7 +908,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Polkadot OTC" data-name="Polkadot OTC" data-icon="●">
+                    <div class="dropdown-item" data-symbol="Polkadot OTC" data-name="Polkadot" data-icon="●">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#ec4899;">●</div>
                             <div>
@@ -812,7 +919,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Polygon OTC" data-name="Polygon OTC" data-icon="M">
+                    <div class="dropdown-item" data-symbol="Polygon OTC" data-name="Polygon" data-icon="M">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#a855f7;">M</div>
                             <div>
@@ -823,7 +930,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Solana OTC" data-name="Solana OTC" data-icon="S">
+                    <div class="dropdown-item" data-symbol="Solana OTC" data-name="Solana" data-icon="S">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#22c55e;">S</div>
                             <div>
@@ -834,7 +941,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Toncoin OTC" data-name="Toncoin OTC" data-icon="T">
+                    <div class="dropdown-item" data-symbol="Toncoin OTC" data-name="Toncoin" data-icon="T">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#0ea5e9;">T</div>
                             <div>
@@ -845,7 +952,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="TRON OTC" data-name="TRON OTC" data-icon="Tr">
+                    <div class="dropdown-item" data-symbol="TRON OTC" data-name="TRON" data-icon="Tr">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#f97316;">Tr</div>
                             <div>
@@ -856,7 +963,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Cardano OTC" data-name="Cardano OTC" data-icon="A">
+                    <div class="dropdown-item" data-symbol="Cardano OTC" data-name="Cardano" data-icon="A">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#38bdf8;">A</div>
                             <div>
@@ -867,7 +974,7 @@
                         <div class="dropdown-item-right">Crypto OTC</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="Litecoin OTC" data-name="Litecoin OTC" data-icon="Ł">
+                    <div class="dropdown-item" data-symbol="Litecoin OTC" data-name="Litecoin" data-icon="Ł">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#9ca3af;">Ł</div>
                             <div>
@@ -890,9 +997,9 @@
                     </div>
 
                     <!-- КРИПТА 3: ПАРЫ К ФИАТУ -->
-                    <div class="dropdown-section-title">Крипта — пары к фиату</div>
+                    <div class="dropdown-section-title" id="sec-crypto-fiat">Крипта — пары к фиату</div>
 
-                    <div class="dropdown-item" data-symbol="BCH/EUR" data-name="Bitcoin Cash / EUR" data-icon="BCH">
+                    <div class="dropdown-item" data-symbol="BCH/EUR" data-name="Bitcoin Cash / Евро" data-icon="BCH">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#16a34a;">BC</div>
                             <div>
@@ -903,7 +1010,7 @@
                         <div class="dropdown-item-right">Crypto/FX</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="BCH/GBP" data-name="Bitcoin Cash / GBP" data-icon="BCH">
+                    <div class="dropdown-item" data-symbol="BCH/GBP" data-name="Bitcoin Cash / Фунт" data-icon="BCH">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#15803d;">BC</div>
                             <div>
@@ -914,7 +1021,7 @@
                         <div class="dropdown-item-right">Crypto/FX</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="BCH/JPY" data-name="Bitcoin Cash / JPY" data-icon="BCH">
+                    <div class="dropdown-item" data-symbol="BCH/JPY" data-name="Bitcoin Cash / Иена" data-icon="BCH">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#22c55e;">BC</div>
                             <div>
@@ -925,7 +1032,7 @@
                         <div class="dropdown-item-right">Crypto/FX</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="BTC/GBP" data-name="Bitcoin / GBP" data-icon="₿">
+                    <div class="dropdown-item" data-symbol="BTC/GBP" data-name="Bitcoin / Фунт" data-icon="₿">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#ea580c;">₿</div>
                             <div>
@@ -936,7 +1043,7 @@
                         <div class="dropdown-item-right">Crypto/FX</div>
                     </div>
 
-                    <div class="dropdown-item" data-symbol="BTC/JPY" data-name="Bitcoin / JPY" data-icon="₿">
+                    <div class="dropdown-item" data-symbol="BTC/JPY" data-name="Bitcoin / Иена" data-icon="₿">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#c2410c;">₿</div>
                             <div>
@@ -950,13 +1057,15 @@
                 </div>
             </div>
             <div class="pill-row">
-                <div class="pill">Выбери инструмент, по которому будешь открывать сделку у брокера.</div>
+                <div class="pill" id="asset-hint">
+                    Выбери инструмент, по которому будешь открывать сделку у брокера.
+                </div>
             </div>
         </div>
 
         <!-- Время экспирации -->
         <div class="field-group">
-            <label>Время экспирации</label>
+            <label id="expiry-label">Время экспирации</label>
             <div class="dropdown small" id="expiry-dropdown">
                 <button class="dropdown-toggle" id="expiry-toggle" type="button">
                     <div class="dropdown-left">
@@ -1082,7 +1191,9 @@
                 </div>
             </div>
             <div class="pill-row">
-                <div class="pill">Короткое время — больше динамики, длинное — более размеренная торговля.</div>
+                <div class="pill" id="expiry-hint">
+                    Короткое время — больше динамики, длинное — более размеренная торговля.
+                </div>
             </div>
         </div>
 
@@ -1097,13 +1208,13 @@
 
             <div class="result-main">
                 <div class="direction-block">
-                    <div class="direction-label">Прогноз по направлению</div>
+                    <div class="direction-label" id="direction-label">Прогноз по направлению</div>
                     <div class="direction-value" id="signal-direction"></div>
                 </div>
 
                 <div class="timer-shell">
                     <div class="timer-circle">
-                        <div class="timer-label">таймер</div>
+                        <div class="timer-label" id="timer-label">таймер</div>
                         <div class="timer-value" id="timer">0</div>
                     </div>
                 </div>
@@ -1118,13 +1229,13 @@
             </div>
 
             <div class="history-block">
-                <div class="history-title">История за сессию</div>
+                <div class="history-title" id="history-title">История за сессию</div>
                 <div class="history-list" id="history-list">Пока ещё нет сигналов.</div>
             </div>
         </div>
     </div>
 
-    <div class="hint" style="margin-top:10px;">
+    <div class="hint" id="global-hint-bottom" style="margin-top:10px;">
         1️⃣ Выбери режим и актив. 2️⃣ Укажи время экспирации. 3️⃣ Нажми <strong>«Получить прогноз»</strong> и действуй по плану.
     </div>
 </div>
@@ -1134,6 +1245,268 @@
     if (tg) tg.expand();
 
     const STORAGE_KEY = 'aisignal_state_v2';
+    const LANG_STORAGE_KEY = 'aisignal_lang_v1';
+
+    let currentLang = 'ru';
+
+    const i18n = {
+        ru: {
+            header_signal_window: 'Сигнальное окно',
+            mode_label: 'Режим торговли',
+            asset_label: 'Монета / актив',
+            expiry_label: 'Время экспирации',
+            history_title: 'История за сессию',
+            timer_label: 'таймер',
+            asset_hint: 'Выбери инструмент, по которому будешь открывать сделку у брокера.',
+            expiry_hint: 'Короткое время — больше динамики, длинное — более размеренная торговля.',
+            main_hint: '1️⃣ Выбери режим и актив. 2️⃣ Укажи время экспирации. 3️⃣ Нажми <strong>«Получить прогноз»</strong> и действуй по плану.',
+            result_hint_initial: 'Здесь будут подсказки по раунду.',
+            result_hint_wait: 'Сигнал получен. Открой сделку у брокера и жди окончания таймера.',
+            result_hint_done: 'Раунд завершён. Проверь результат у брокера и при желании начни новый.',
+            history_empty: 'Пока ещё нет сигналов.',
+            btn_start: 'Получить прогноз и запустить таймер',
+            btn_running: 'Таймер идёт…',
+            btn_new_round: 'Новый раунд',
+            error_select_before_start: 'Выбери актив и время экспирации перед запуском.',
+            mode_calm_label: 'Спокойный',
+            mode_aggressive_label: 'Агрессивный',
+            mode_hint_calm: 'Спокойный режим — больше времени на решение, меньше шума.',
+            mode_hint_aggressive: 'Агрессивный режим — короткие сделки и максимум динамики.',
+            live_badge: 'LIVE',
+            sec_forex: 'Forex — валютные пары',
+            sec_metals: 'Металлы',
+            sec_crypto_main: 'Криптовалюты — основные',
+            sec_crypto_otc: 'Криптовалюты — OTC',
+            sec_crypto_fiat: 'Крипта — пары к фиату',
+            direction_label: 'Прогноз по направлению'
+        },
+        en: {
+            header_signal_window: 'Signal window',
+            mode_label: 'Trading mode',
+            asset_label: 'Asset',
+            expiry_label: 'Expiration time',
+            history_title: 'Session history',
+            timer_label: 'timer',
+            asset_hint: 'Choose the instrument you will trade at your broker.',
+            expiry_hint: 'Short time — more dynamics, long time — more relaxed trading.',
+            main_hint: '1️⃣ Choose mode and asset. 2️⃣ Set expiration time. 3️⃣ Press <strong>“Get signal”</strong> and follow the plan.',
+            result_hint_initial: 'Tips for the round will appear here.',
+            result_hint_wait: 'Signal received. Open a trade with your broker and wait for the timer to finish.',
+            result_hint_done: 'Round is over. Check the result at your broker and start a new one if you wish.',
+            history_empty: 'No signals yet.',
+            btn_start: 'Get signal and start timer',
+            btn_running: 'Timer is running…',
+            btn_new_round: 'New round',
+            error_select_before_start: 'Select an asset and expiration before starting.',
+            mode_calm_label: 'Calm',
+            mode_aggressive_label: 'Aggressive',
+            mode_hint_calm: 'Calm mode — more time to decide, less noise.',
+            mode_hint_aggressive: 'Aggressive mode — short trades and maximum dynamics.',
+            live_badge: 'LIVE',
+            sec_forex: 'Forex — currency pairs',
+            sec_metals: 'Metals',
+            sec_crypto_main: 'Cryptocurrencies — main',
+            sec_crypto_otc: 'Cryptocurrencies — OTC',
+            sec_crypto_fiat: 'Crypto — fiat pairs',
+            direction_label: 'Direction forecast'
+        }
+    };
+
+    const i18nAssets = {
+        EURUSD: {
+            ru: { sub: 'Евро / Доллар', right: 'Forex' },
+            en: { sub: 'Euro / US Dollar', right: 'Forex' }
+        },
+        GBPUSD: {
+            ru: { sub: 'Фунт / Доллар', right: 'Forex' },
+            en: { sub: 'Pound / US Dollar', right: 'Forex' }
+        },
+        USDJPY: {
+            ru: { sub: 'Доллар / Иена', right: 'Forex' },
+            en: { sub: 'US Dollar / Yen', right: 'Forex' }
+        },
+        USDCHF: {
+            ru: { sub: 'Доллар / Франк', right: 'Forex' },
+            en: { sub: 'US Dollar / Franc', right: 'Forex' }
+        },
+        USDCAD: {
+            ru: { sub: 'Доллар / Канадец', right: 'Forex' },
+            en: { sub: 'US Dollar / Canadian Dollar', right: 'Forex' }
+        },
+        AUDUSD: {
+            ru: { sub: 'Австралиец / Доллар', right: 'Forex' },
+            en: { sub: 'Australian Dollar / US Dollar', right: 'Forex' }
+        },
+        NZDUSD: {
+            ru: { sub: 'Новозеландец / Доллар', right: 'Forex' },
+            en: { sub: 'New Zealand Dollar / US Dollar', right: 'Forex' }
+        },
+        EURJPY: {
+            ru: { sub: 'Евро / Иена', right: 'Forex' },
+            en: { sub: 'Euro / Yen', right: 'Forex' }
+        },
+        EURGBP: {
+            ru: { sub: 'Евро / Фунт', right: 'Forex' },
+            en: { sub: 'Euro / Pound', right: 'Forex' }
+        },
+        EURCHF: {
+            ru: { sub: 'Евро / Франк', right: 'Forex' },
+            en: { sub: 'Euro / Franc', right: 'Forex' }
+        },
+        GBPJPY: {
+            ru: { sub: 'Фунт / Иена', right: 'Forex' },
+            en: { sub: 'Pound / Yen', right: 'Forex' }
+        },
+        XAUUSD: {
+            ru: { sub: 'Золото', right: 'Metal' },
+            en: { sub: 'Gold', right: 'Metal' }
+        },
+        XAGUSD: {
+            ru: { sub: 'Серебро', right: 'Metal' },
+            en: { sub: 'Silver', right: 'Metal' }
+        },
+        Bitcoin: {
+            ru: { sub: 'Биткоин', right: 'Crypto' },
+            en: { sub: 'Bitcoin', right: 'Crypto' }
+        },
+        Ethereum: {
+            ru: { sub: 'Эфириум', right: 'Crypto' },
+            en: { sub: 'Ethereum', right: 'Crypto' }
+        },
+        Dash: {
+            ru: { sub: 'Dash', right: 'Crypto' },
+            en: { sub: 'Dash', right: 'Crypto' }
+        },
+        'Chainlink OTC': {
+            ru: { sub: 'Chainlink', right: 'Crypto OTC' },
+            en: { sub: 'Chainlink', right: 'Crypto OTC' }
+        },
+        'BNB OTC': {
+            ru: { sub: 'BNB', right: 'Crypto OTC' },
+            en: { sub: 'BNB', right: 'Crypto OTC' }
+        },
+        'Bitcoin OTC': {
+            ru: { sub: 'Bitcoin OTC', right: 'Crypto OTC' },
+            en: { sub: 'Bitcoin OTC', right: 'Crypto OTC' }
+        },
+        'Avalanche OTC': {
+            ru: { sub: 'Avalanche', right: 'Crypto OTC' },
+            en: { sub: 'Avalanche', right: 'Crypto OTC' }
+        },
+        'Bitcoin ETF OTC': {
+            ru: { sub: 'Bitcoin ETF', right: 'Crypto OTC' },
+            en: { sub: 'Bitcoin ETF', right: 'Crypto OTC' }
+        },
+        'Dogecoin OTC': {
+            ru: { sub: 'Dogecoin', right: 'Crypto OTC' },
+            en: { sub: 'Dogecoin', right: 'Crypto OTC' }
+        },
+        'Polkadot OTC': {
+            ru: { sub: 'Polkadot', right: 'Crypto OTC' },
+            en: { sub: 'Polkadot', right: 'Crypto OTC' }
+        },
+        'Polygon OTC': {
+            ru: { sub: 'Polygon', right: 'Crypto OTC' },
+            en: { sub: 'Polygon', right: 'Crypto OTC' }
+        },
+        'Solana OTC': {
+            ru: { sub: 'Solana', right: 'Crypto OTC' },
+            en: { sub: 'Solana', right: 'Crypto OTC' }
+        },
+        'Toncoin OTC': {
+            ru: { sub: 'Toncoin', right: 'Crypto OTC' },
+            en: { sub: 'Toncoin', right: 'Crypto OTC' }
+        },
+        'TRON OTC': {
+            ru: { sub: 'TRON', right: 'Crypto OTC' },
+            en: { sub: 'TRON', right: 'Crypto OTC' }
+        },
+        'Cardano OTC': {
+            ru: { sub: 'Cardano', right: 'Crypto OTC' },
+            en: { sub: 'Cardano', right: 'Crypto OTC' }
+        },
+        'Litecoin OTC': {
+            ru: { sub: 'Litecoin', right: 'Crypto OTC' },
+            en: { sub: 'Litecoin', right: 'Crypto OTC' }
+        },
+        'Ethereum OTC': {
+            ru: { sub: 'Ethereum OTC', right: 'Crypto OTC' },
+            en: { sub: 'Ethereum OTC', right: 'Crypto OTC' }
+        },
+        'BCH/EUR': {
+            ru: { sub: 'Bitcoin Cash / Евро', right: 'Crypto/FX' },
+            en: { sub: 'Bitcoin Cash / Euro', right: 'Crypto/FX' }
+        },
+        'BCH/GBP': {
+            ru: { sub: 'Bitcoin Cash / Фунт', right: 'Crypto/FX' },
+            en: { sub: 'Bitcoin Cash / Pound', right: 'Crypto/FX' }
+        },
+        'BCH/JPY': {
+            ru: { sub: 'Bitcoin Cash / Иена', right: 'Crypto/FX' },
+            en: { sub: 'Bitcoin Cash / Yen', right: 'Crypto/FX' }
+        },
+        'BTC/GBP': {
+            ru: { sub: 'Bitcoin / Фунт', right: 'Crypto/FX' },
+            en: { sub: 'Bitcoin / Pound', right: 'Crypto/FX' }
+        },
+        'BTC/JPY': {
+            ru: { sub: 'Bitcoin / Иена', right: 'Crypto/FX' },
+            en: { sub: 'Bitcoin / Yen', right: 'Crypto/FX' }
+        }
+    };
+
+    const i18nExpiry = {
+        '5s': {
+            ru: { label: '5 секунд', sub: 'Хард-скальпинг' },
+            en: { label: '5 seconds', sub: 'Hard scalping' }
+        },
+        '10s': {
+            ru: { label: '10 секунд', sub: 'Сверхбыстрый вход' },
+            en: { label: '10 seconds', sub: 'Ultra-fast entry' }
+        },
+        '15s': {
+            ru: { label: '15 секунд', sub: 'Быстрый импульс' },
+            en: { label: '15 seconds', sub: 'Quick impulse' }
+        },
+        '30s': {
+            ru: { label: '30 секунд', sub: 'Импульсная сделка' },
+            en: { label: '30 seconds', sub: 'Impulse trade' }
+        },
+        '45s': {
+            ru: { label: '45 секунд', sub: 'Поймать движение' },
+            en: { label: '45 seconds', sub: 'Catch the move' }
+        },
+        '1m': {
+            ru: { label: '1 минута', sub: 'Классический скальпинг' },
+            en: { label: '1 minute', sub: 'Classic scalping' }
+        },
+        '2m': {
+            ru: { label: '2 минуты', sub: 'Чуть спокойнее' },
+            en: { label: '2 minutes', sub: 'Slightly calmer' }
+        },
+        '3m': {
+            ru: { label: '3 минуты', sub: 'Сбалансированный вход' },
+            en: { label: '3 minutes', sub: 'Balanced entry' }
+        },
+        '5m': {
+            ru: { label: '5 минут', sub: 'Более плавное движение' },
+            en: { label: '5 minutes', sub: 'Smoother movement' }
+        },
+        '10m': {
+            ru: { label: '10 минут', sub: 'Мини-свинг' },
+            en: { label: '10 minutes', sub: 'Mini-swing' }
+        },
+        '15m': {
+            ru: { label: '15 минут', sub: 'Максимум спокойствия' },
+            en: { label: '15 minutes', sub: 'Maximum calm' }
+        }
+    };
+
+    function t(key) {
+        return (i18n[currentLang] && i18n[currentLang][key]) ||
+               (i18n['ru'] && i18n['ru'][key]) ||
+               key;
+    }
 
     const btnStart = document.getElementById('btn-start');
 
@@ -1165,6 +1538,7 @@
     const expiryLabelSub = document.getElementById('expiry-label-sub');
 
     const historyList = document.getElementById('history-list');
+    const langButtons = document.querySelectorAll('.lang-btn');
 
     let currentMode = 'calm';
     let timerId = null;
@@ -1190,6 +1564,12 @@
         userPill.textContent = 'Профиль недоступен';
     }
 
+    function updateModeHint() {
+        modeHint.textContent = currentMode === 'calm'
+            ? t('mode_hint_calm')
+            : t('mode_hint_aggressive');
+    }
+
     // ----- Режимы -----
     function applyMode(mode, changeExpiry = true) {
         currentMode = mode;
@@ -1198,12 +1578,11 @@
         });
 
         if (mode === 'calm') {
-            modeHint.textContent = 'Спокойный режим — больше времени на решение, меньше шума.';
             if (changeExpiry) pickExpiryByValue('3m');
         } else {
-            modeHint.textContent = 'Агрессивный режим — короткие сделки и максимум динамики.';
             if (changeExpiry) pickExpiryByValue('15s');
         }
+        updateModeHint();
     }
 
     modeButtons.forEach(btn => {
@@ -1265,7 +1644,6 @@
 
         expiryLabelMain.textContent = label;
         expiryLabelSub.textContent = sub || '';
-        // иконка у всех одинаковая ⏱, цвет берём с элемента
         expiryIcon.style.backgroundColor =
             item.querySelector('.dropdown-icon').style.backgroundColor || '#1d4ed8';
 
@@ -1315,9 +1693,9 @@
                 timerId = null;
                 remaining = 0;
                 updateTimerUI();
-                hintEl.textContent = 'Раунд завершён. Проверь результат у брокера и при желании начни новый.';
+                hintEl.textContent = t('result_hint_done');
                 btnStart.disabled = false;
-                btnStart.textContent = 'Новый раунд';
+                btnStart.textContent = t('btn_new_round');
             } else {
                 updateTimerUI();
             }
@@ -1344,7 +1722,7 @@
 
     function renderHistory() {
         if (history.length === 0) {
-            historyList.textContent = 'Пока ещё нет сигналов.';
+            historyList.textContent = t('history_empty');
             return;
         }
         historyList.innerHTML = '';
@@ -1370,7 +1748,9 @@
             right.className = 'history-right';
 
             const dirEl = document.createElement('div');
-            dirEl.textContent = item.direction === 'UP' ? 'ВВЕРХ' : 'ВНИЗ';
+            dirEl.textContent = item.direction === 'UP'
+                ? (currentLang === 'ru' ? 'ВВЕРХ' : 'UP')
+                : (currentLang === 'ru' ? 'ВНИЗ' : 'DOWN');
             dirEl.className = item.direction === 'UP' ? 'history-dir-up' : 'history-dir-down';
 
             const timeEl = document.createElement('div');
@@ -1407,12 +1787,11 @@
     }
 
     function loadState() {
-        // базовый дефолт
         applyMode('calm', false);
-        // первый актив в списке
+
         const firstAsset = assetMenu.querySelector('.dropdown-item');
         if (firstAsset) pickAssetFromItem(firstAsset);
-        // первый таймфрейм
+
         const firstExpiry = expiryMenu.querySelector('.dropdown-item');
         if (firstExpiry) pickExpiryFromItem(firstExpiry);
 
@@ -1429,13 +1808,137 @@
         } catch(e) {}
     }
 
+    function applyAssetTranslations() {
+        const items = assetMenu.querySelectorAll('.dropdown-item');
+        items.forEach(item => {
+            const symbol = item.dataset.symbol;
+            const map = i18nAssets[symbol];
+            if (!map) return;
+            const tr = map[currentLang];
+            if (!tr) return;
+            const mainEl = item.querySelector('.dropdown-item-main');
+            const subEl = item.querySelector('.dropdown-item-sub');
+            const rightEl = item.querySelector('.dropdown-item-right');
+
+            if (tr.sub && subEl) {
+                subEl.textContent = tr.sub;
+                item.dataset.name = tr.sub;
+            }
+            if (tr.right && rightEl) {
+                rightEl.textContent = tr.right;
+            }
+        });
+
+        if (currentAsset) {
+            pickAssetBySymbol(currentAsset.symbol);
+        }
+    }
+
+    function applyExpiryTranslations() {
+        const items = expiryMenu.querySelectorAll('.dropdown-item');
+        items.forEach(item => {
+            const val = item.dataset.value;
+            const map = i18nExpiry[val];
+            if (!map) return;
+            const tr = map[currentLang];
+            const mainEl = item.querySelector('.dropdown-item-main');
+            const subEl = item.querySelector('.dropdown-item-sub');
+            item.dataset.label = tr.label;
+            item.dataset.sub = tr.sub;
+            if (mainEl) mainEl.textContent = tr.label;
+            if (subEl) subEl.textContent = tr.sub;
+        });
+
+        if (currentExpiry) {
+            pickExpiryByValue(currentExpiry.value);
+        }
+    }
+
+    function applyTranslations() {
+        document.getElementById('card-header-title').textContent = t('header_signal_window');
+        document.getElementById('mode-label').textContent = t('mode_label');
+        document.getElementById('asset-label').textContent = t('asset_label');
+        document.getElementById('expiry-label').textContent = t('expiry_label');
+        document.getElementById('history-title').textContent = t('history_title');
+        document.getElementById('timer-label').textContent = t('timer_label');
+        document.getElementById('asset-hint').textContent = t('asset_hint');
+        document.getElementById('expiry-hint').textContent = t('expiry_hint');
+        document.getElementById('global-hint-bottom').innerHTML = t('main_hint');
+        document.getElementById('live-text').textContent = t('live_badge');
+        document.getElementById('direction-label').textContent = t('direction_label');
+
+        document.getElementById('sec-forex').textContent = t('sec_forex');
+        document.getElementById('sec-metals').textContent = t('sec_metals');
+        document.getElementById('sec-crypto-main').textContent = t('sec_crypto_main');
+        document.getElementById('sec-crypto-otc').textContent = t('sec_crypto_otc');
+        document.getElementById('sec-crypto-fiat').textContent = t('sec_crypto_fiat');
+
+        modeButtons.forEach(btn => {
+            btn.textContent = btn.dataset.mode === 'calm'
+                ? t('mode_calm_label')
+                : t('mode_aggressive_label');
+        });
+
+        updateModeHint();
+
+        if (timerId) {
+            hintEl.textContent = t('result_hint_wait');
+        } else if (history.length > 0 && remaining === 0) {
+            hintEl.textContent = t('result_hint_done');
+        } else {
+            hintEl.textContent = t('result_hint_initial');
+        }
+
+        if (timerId) {
+            btnStart.textContent = t('btn_running');
+        } else if (history.length > 0 && remaining === 0) {
+            btnStart.textContent = t('btn_new_round');
+        } else {
+            btnStart.textContent = t('btn_start');
+        }
+
+        applyAssetTranslations();
+        applyExpiryTranslations();
+        renderHistory();
+    }
+
+    function updateLangButtons() {
+        langButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === currentLang);
+        });
+    }
+
+    langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.dataset.lang;
+            if (lang === currentLang) return;
+            currentLang = lang;
+            try {
+                window.localStorage.setItem(LANG_STORAGE_KEY, lang);
+            } catch(e) {}
+            updateLangButtons();
+            applyTranslations();
+        });
+    });
+
+    (function initLanguage() {
+        try {
+            const saved = window.localStorage.getItem(LANG_STORAGE_KEY);
+            if (saved === 'ru' || saved === 'en') {
+                currentLang = saved;
+            }
+        } catch(e) {}
+        updateLangButtons();
+    })();
+
     loadState();
+    applyTranslations();
 
     // ----- Кнопка запуска -----
 
     btnStart.addEventListener('click', () => {
         if (!currentAsset || !currentExpiry) {
-            hintEl.textContent = 'Выбери актив и время экспирации перед запуском.';
+            hintEl.textContent = t('error_select_before_start');
             return;
         }
 
@@ -1449,7 +1952,9 @@
         signalExpiry.textContent = expiryLabel;
 
         const arrow = direction === 'UP' ? '↑' : '↓';
-        const text = direction === 'UP' ? 'ВВЕРХ' : 'ВНИЗ';
+        const text = direction === 'UP'
+            ? (currentLang === 'ru' ? 'ВВЕРХ' : 'UP')
+            : (currentLang === 'ru' ? 'ВНИЗ' : 'DOWN');
 
         signalDirection.innerHTML = '';
         const arrowSpan = document.createElement('span');
@@ -1465,9 +1970,9 @@
 
         signalBlock.style.display = 'block';
         btnStart.disabled = true;
-        btnStart.textContent = 'Таймер идёт…';
+        btnStart.textContent = t('btn_running');
 
-        hintEl.textContent = 'Сигнал получен. Открой сделку у брокера и жди окончания таймера.';
+        hintEl.textContent = t('result_hint_wait');
         startTimer(seconds);
 
         const now = new Date();
@@ -1475,14 +1980,14 @@
             asset,
             expiryLabel,
             direction,
-            modeLabel: currentMode === 'calm' ? 'спокойный' : 'агрессивный',
+            modeLabel: currentMode === 'calm'
+                ? (currentLang === 'ru' ? 'спокойный' : 'calm')
+                : (currentLang === 'ru' ? 'агрессивный' : 'aggressive'),
             time: formatTime(now)
         });
 
         saveState();
-        // сюда можно добавить tg.sendData(...) если нужно
     });
 </script>
 </body>
 </html>
-
