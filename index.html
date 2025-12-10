@@ -123,20 +123,23 @@
             background: transparent;
             display: inline-flex;
             align-items: center;
-            gap: 3px;
-            padding: 2px 6px;
+            justify-content: center;
+            padding: 3px 8px;
             border-radius: 999px;
             cursor: pointer;
             font-size: 11px;
             color: var(--text-muted);
+            min-width: 30px;
         }
 
-        .lang-btn .flag { font-size: 13px; }
-        .lang-btn .lang-label { text-transform: uppercase; }
+        .lang-btn .lang-label {
+            text-transform: uppercase;
+        }
 
         .lang-btn.active {
-            background: rgba(15, 23, 42, 0.9);
+            background: #1d4ed8;
             color: #e5e7eb;
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.9);
         }
 
         .card {
@@ -676,11 +679,9 @@
             <div class="user-pill" id="user-pill">Загрузка профиля…</div>
             <div class="lang-switch" id="lang-switch">
                 <button type="button" class="lang-btn active" data-lang="ru">
-                    <span class="flag">🇷🇺</span>
                     <span class="lang-label">RU</span>
                 </button>
                 <button type="button" class="lang-btn" data-lang="en">
-                    <span class="flag">🇬🇧</span>
                     <span class="lang-label">EN</span>
                 </button>
             </div>
@@ -1152,6 +1153,18 @@
                     <div class="dropdown-caret">▾</div>
                 </button>
                 <div class="dropdown-menu" id="expiry-menu">
+                    <!-- Новый пункт: 3 секунды -->
+                    <div class="dropdown-item" data-value="3s" data-seconds="3" data-label="3 секунды" data-sub="Реакция на импульс">
+                        <div class="dropdown-item-left">
+                            <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
+                            <div>
+                                <div class="dropdown-item-main">3 секунды</div>
+                                <div class="dropdown-item-sub">Реакция на импульс</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item-right">3s</div>
+                    </div>
+
                     <div class="dropdown-item" data-value="5s" data-seconds="5" data-label="5 секунд" data-sub="Хард-скальпинг">
                         <div class="dropdown-item-left">
                             <div class="dropdown-icon" style="background:#1d4ed8;">⏱</div>
@@ -1331,7 +1344,7 @@
     const LANG_STORAGE_KEY = 'aisignal_lang_v1';
 
     let currentLang = 'ru';
-    let appStatus = tg ? 'online' : 'online'; // считаем бот online, но слушаем offline-события
+    let appStatus = tg ? 'online' : 'online';
 
     const i18n = {
         ru: {
@@ -1351,6 +1364,7 @@
             btn_start: 'Получить прогноз и запустить таймер',
             btn_running: 'Таймер идёт…',
             btn_new_round: 'Новый раунд',
+            btn_cancel_timer: 'Остановить таймер',
             error_select_before_start: 'Выбери актив и время экспирации перед запуском.',
             mode_calm_label: 'Спокойный',
             mode_aggressive_label: 'Агрессивный',
@@ -1383,6 +1397,7 @@
             btn_start: 'Get signal and start timer',
             btn_running: 'Timer is running…',
             btn_new_round: 'New round',
+            btn_cancel_timer: 'Stop timer',
             error_select_before_start: 'Select an asset and expiration before starting.',
             mode_calm_label: 'Calm',
             mode_aggressive_label: 'Aggressive',
@@ -1544,6 +1559,10 @@
     };
 
     const i18nExpiry = {
+        '3s': {
+            ru: { label: '3 секунды', sub: 'Реакция на импульс' },
+            en: { label: '3 seconds', sub: 'Reaction to impulse' }
+        },
         '5s': {
             ru: { label: '5 секунд', sub: 'Хард-скальпинг' },
             en: { label: '5 seconds', sub: 'Hard scalping' }
@@ -1639,7 +1658,7 @@
     let currentAsset = null;
     let currentExpiry = null;
 
-    // Профиль в шапке
+    // Профиль
     try {
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const u = tg.initDataUnsafe.user;
@@ -1775,6 +1794,7 @@
         totalSeconds = seconds;
         remaining = seconds;
         updateTimerUI();
+        btnStart.textContent = t('btn_cancel_timer');
 
         timerId = setInterval(() => {
             remaining -= 1;
@@ -1784,12 +1804,22 @@
                 remaining = 0;
                 updateTimerUI();
                 hintEl.textContent = t('result_hint_done');
-                btnStart.disabled = false;
                 btnStart.textContent = t('btn_new_round');
             } else {
                 updateTimerUI();
             }
         }, 1000);
+    }
+
+    function cancelTimer() {
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+        }
+        remaining = 0;
+        updateTimerUI();
+        hintEl.textContent = t('result_hint_done');
+        btnStart.textContent = t('btn_new_round');
     }
 
     function updateTimerUI() {
@@ -1882,7 +1912,8 @@
         const firstAsset = assetMenu.querySelector('.dropdown-item');
         if (firstAsset) pickAssetFromItem(firstAsset);
 
-        const firstExpiry = expiryMenu.querySelector('.dropdown-item');
+        const firstExpiry = expiryMenu.querySelector('.dropdown-item[data-value="5s"]') ||
+                            expiryMenu.querySelector('.dropdown-item');
         if (firstExpiry) pickExpiryFromItem(firstExpiry);
 
         try {
@@ -1979,7 +2010,7 @@
         }
 
         if (timerId) {
-            btnStart.textContent = t('btn_running');
+            btnStart.textContent = t('btn_cancel_timer');
         } else if (history.length > 0 && remaining === 0) {
             btnStart.textContent = t('btn_new_round');
         } else {
@@ -2036,7 +2067,6 @@
         updateLangButtons();
     })();
 
-    // Реакция на online/offline сети
     window.addEventListener('online', () => {
         appStatus = 'online';
         applyTranslations();
@@ -2050,9 +2080,15 @@
     loadState();
     applyTranslations();
 
-    // ----- Кнопка запуска -----
+    // ----- Кнопка запуска / остановки -----
 
     btnStart.addEventListener('click', () => {
+        // если таймер уже идёт — останавливаем
+        if (timerId) {
+            cancelTimer();
+            return;
+        }
+
         if (!currentAsset || !currentExpiry) {
             hintEl.textContent = t('error_select_before_start');
             return;
@@ -2085,8 +2121,6 @@
             'direction-value ' + (direction === 'UP' ? 'direction-up' : 'direction-down');
 
         signalBlock.style.display = 'block';
-        btnStart.disabled = true;
-        btnStart.textContent = t('btn_running');
 
         hintEl.textContent = t('result_hint_wait');
         startTimer(seconds);
