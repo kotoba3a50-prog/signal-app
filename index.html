@@ -28,6 +28,7 @@
                 radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.2), transparent 60%),
                 var(--bg-main);
             color: var(--text-main);
+            transition: background-position 0.25s ease-out;
         }
 
         .shell { max-width: 480px; margin: 0 auto; }
@@ -46,9 +47,6 @@
         }
 
         .app-title {
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.03em;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -61,6 +59,41 @@
             background: radial-gradient(circle, #22c55e, transparent 60%);
             box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
             animation: logoPulse 2s ease-in-out infinite;
+        }
+
+        .app-title-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .app-name {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .app-substatus {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-muted);
+            opacity: 0.9;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+            animation: logoPulse 2.4s ease-in-out infinite;
+        }
+
+        .status-dot.offline {
+            background: #f97373;
+            box-shadow: 0 0 8px rgba(248, 113, 113, 0.8);
         }
 
         .user-pill {
@@ -114,6 +147,7 @@
                 0 18px 45px rgba(15, 23, 42, 0.9),
                 0 0 0 1px rgba(148, 163, 184, 0.18);
             backdrop-filter: blur(12px);
+            transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
         }
 
         .card-header {
@@ -494,6 +528,13 @@
             margin-top: 10px;
             padding-top: 8px;
             border-top: 1px dashed rgba(51, 65, 85, 0.7);
+            transition: box-shadow 0.3s ease-out, border-top-color 0.3s ease-out, background 0.3s ease-out;
+        }
+
+        .history-block.history-glow {
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.25);
+            border-top-color: rgba(148, 163, 184, 0.9);
+            background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.95));
         }
 
         .history-title {
@@ -532,6 +573,33 @@
         .history-time { color: var(--text-muted); }
         .history-dir-up { color: #4ade80; }
         .history-dir-down { color: #fb7185; }
+
+        /* Ссылка на канал */
+        .channel-link {
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .channel-link a {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(55, 65, 81, 0.85);
+        }
+
+        .channel-link a strong {
+            color: #e5e7eb;
+        }
+
+        .channel-link a:hover {
+            border-color: rgba(148, 163, 184, 0.95);
+        }
 
         @media (max-width: 360px) {
             .result-main { flex-direction: column; align-items: stretch; }
@@ -596,7 +664,13 @@
     <div class="topbar">
         <div class="app-title">
             <span class="logo-dot"></span>
-            <span>AISIGNAL</span>
+            <div class="app-title-text">
+                <span class="app-name">AISIGNAL</span>
+                <div class="app-substatus">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span id="status-text">Бот онлайн</span>
+                </div>
+            </div>
         </div>
         <div class="topbar-right">
             <div class="user-pill" id="user-pill">Загрузка профиля…</div>
@@ -606,7 +680,7 @@
                     <span class="lang-label">RU</span>
                 </button>
                 <button type="button" class="lang-btn" data-lang="en">
-                    <span class="flag">🇺🇸</span>
+                    <span class="flag">🇬🇧</span>
                     <span class="lang-label">EN</span>
                 </button>
             </div>
@@ -1238,6 +1312,15 @@
     <div class="hint" id="global-hint-bottom" style="margin-top:10px;">
         1️⃣ Выбери режим и актив. 2️⃣ Укажи время экспирации. 3️⃣ Нажми <strong>«Получить прогноз»</strong> и действуй по плану.
     </div>
+
+    <div class="channel-link">
+        <a href="https://t.me/AISIGNALA"
+           target="_blank"
+           rel="noopener noreferrer"
+           id="channel-link-text">
+            Наш Telegram-канал <strong>@AISIGNALA</strong>
+        </a>
+    </div>
 </div>
 
 <script>
@@ -1248,6 +1331,7 @@
     const LANG_STORAGE_KEY = 'aisignal_lang_v1';
 
     let currentLang = 'ru';
+    let appStatus = tg ? 'online' : 'online'; // считаем бот online, но слушаем offline-события
 
     const i18n = {
         ru: {
@@ -1278,7 +1362,9 @@
             sec_crypto_main: 'Криптовалюты — основные',
             sec_crypto_otc: 'Криптовалюты — OTC',
             sec_crypto_fiat: 'Крипта — пары к фиату',
-            direction_label: 'Прогноз по направлению'
+            direction_label: 'Прогноз по направлению',
+            status_online: 'Бот онлайн',
+            status_offline: 'Нет соединения'
         },
         en: {
             header_signal_window: 'Signal window',
@@ -1308,7 +1394,9 @@
             sec_crypto_main: 'Cryptocurrencies — main',
             sec_crypto_otc: 'Cryptocurrencies — OTC',
             sec_crypto_fiat: 'Crypto — fiat pairs',
-            direction_label: 'Direction forecast'
+            direction_label: 'Direction forecast',
+            status_online: 'Bot online',
+            status_offline: 'No connection'
         }
     };
 
@@ -1518,6 +1606,8 @@
     const hintEl = document.getElementById('hint');
     const progressInner = document.getElementById('progress-inner');
     const userPill = document.getElementById('user-pill');
+    const statusTextEl = document.getElementById('status-text');
+    const statusDotEl = document.getElementById('status-dot');
 
     const modeToggle = document.getElementById('mode-toggle');
     const modeHint = document.getElementById('mode-hint');
@@ -1816,7 +1906,6 @@
             if (!map) return;
             const tr = map[currentLang];
             if (!tr) return;
-            const mainEl = item.querySelector('.dropdown-item-main');
             const subEl = item.querySelector('.dropdown-item-sub');
             const rightEl = item.querySelector('.dropdown-item-right');
 
@@ -1897,6 +1986,22 @@
             btnStart.textContent = t('btn_start');
         }
 
+        const ch = document.getElementById('channel-link-text');
+        if (ch) {
+            ch.innerHTML = currentLang === 'ru'
+                ? 'Наш Telegram-канал <strong>@AISIGNALA</strong>'
+                : 'Our Telegram channel <strong>@AISIGNALA</strong>';
+        }
+
+        if (statusTextEl) {
+            statusTextEl.textContent = appStatus === 'online'
+                ? t('status_online')
+                : t('status_offline');
+        }
+        if (statusDotEl) {
+            statusDotEl.classList.toggle('offline', appStatus !== 'online');
+        }
+
         applyAssetTranslations();
         applyExpiryTranslations();
         renderHistory();
@@ -1930,6 +2035,17 @@
         } catch(e) {}
         updateLangButtons();
     })();
+
+    // Реакция на online/offline сети
+    window.addEventListener('online', () => {
+        appStatus = 'online';
+        applyTranslations();
+    });
+
+    window.addEventListener('offline', () => {
+        appStatus = 'offline';
+        applyTranslations();
+    });
 
     loadState();
     applyTranslations();
@@ -1988,6 +2104,34 @@
 
         saveState();
     });
+
+    // Переливание интерфейса при скролле
+    (function setupScrollParallax() {
+        const body = document.body;
+        const card = document.querySelector('.card');
+        const historyBlock = document.querySelector('.history-block');
+
+        window.addEventListener('scroll', () => {
+            const y = window.scrollY || document.documentElement.scrollTop || 0;
+
+            const offset1 = y * 0.18;
+            const offset2 = y * -0.12;
+            body.style.backgroundPosition = `0px ${offset1}px, 100% ${offset2}px, 0 0`;
+
+            if (card) {
+                const translate = Math.min(8, y * 0.03);
+                card.style.transform = `translateY(${translate}px)`;
+            }
+
+            if (historyBlock) {
+                if (y > 60 && history.length > 0) {
+                    historyBlock.classList.add('history-glow');
+                } else {
+                    historyBlock.classList.remove('history-glow');
+                }
+            }
+        }, { passive: true });
+    })();
 </script>
 </body>
 </html>
