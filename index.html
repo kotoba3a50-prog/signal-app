@@ -16,7 +16,32 @@
             --text-muted: #9ca3af;
         }
 
-        * { box-sizing: border-box; }
+        * { 
+            box-sizing: border-box; 
+        }
+
+        /* Кастомные скроллбары под тёмный стиль */
+        * {
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #22c55e rgba(15, 23, 42, 0.95);
+        }
+
+        *::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        *::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            background: linear-gradient(180deg, #22c55e, #0ea5e9);
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #4ade80, #38bdf8);
+        }
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -130,6 +155,7 @@
             font-size: 11px;
             color: var(--text-muted);
             min-width: 30px;
+            transition: background 0.16s ease-out, color 0.16s ease-out, transform 0.08s ease-out;
         }
 
         .lang-btn .lang-label {
@@ -235,6 +261,7 @@
             cursor: pointer;
             background: transparent;
             color: var(--text-muted);
+            transition: background 0.16s ease-out, color 0.16s ease-out, transform 0.08s ease-out;
         }
 
         .mode-btn.active {
@@ -262,6 +289,7 @@
                 radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9), #020617);
             color: var(--text-main);
             cursor: pointer;
+            transition: border-color 0.16s ease-out, background 0.16s ease-out, transform 0.08s ease-out;
         }
 
         .dropdown-left {
@@ -311,6 +339,12 @@
             font-size: 14px;
             color: var(--text-muted);
             flex-shrink: 0;
+            transition: transform 0.18s ease-out, color 0.18s ease-out;
+        }
+
+        .dropdown.open .dropdown-caret {
+            transform: rotate(180deg);
+            color: #e5e7eb;
         }
 
         .dropdown-menu {
@@ -329,6 +363,12 @@
             display: none;
         }
 
+        .dropdown.open .dropdown-toggle {
+            border-color: rgba(148, 163, 184, 0.95);
+            background:
+                radial-gradient(circle at 0 0, rgba(30, 64, 175, 0.4), #020617);
+        }
+
         .dropdown.open .dropdown-menu { display: block; }
 
         .dropdown-item {
@@ -339,6 +379,7 @@
             padding: 6px 6px;
             border-radius: 8px;
             cursor: pointer;
+            transition: background 0.12s ease-out, transform 0.08s ease-out;
         }
 
         .dropdown-item:hover {
@@ -408,7 +449,7 @@
         }
 
         #btn-start:active {
-            transform: translateY(1px) scale(0.99);
+            transform: translateY(1px) scale(0.985);
             box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35);
         }
 
@@ -418,12 +459,21 @@
             box-shadow: 0 6px 16px rgba(15, 23, 42, 0.8);
         }
 
+        /* Эффект продавливания для кнопок и пунктов списков */
+        .mode-btn:active,
+        .lang-btn:active,
+        .dropdown-toggle:active,
+        .dropdown-item:active {
+            transform: translateY(1px) scale(0.99);
+            box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
+        }
+
         .result-block {
             margin-top: 10px;
             border-radius: 16px;
             padding: 12px 10px 10px;
             background: radial-gradient(circle at 0 0, rgba(8, 47, 73, 0.9), rgba(15, 23, 42, 0.96));
-            border: 1px solid rgba(51, 65, 85, 0.9);
+            border: 1px солid rgba(51, 65, 85, 0.9);
             display: none;
         }
 
@@ -1658,7 +1708,6 @@
     let currentAsset = null;
     let currentExpiry = null;
 
-    // Профиль
     try {
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const u = tg.initDataUnsafe.user;
@@ -1679,7 +1728,6 @@
             : t('mode_hint_aggressive');
     }
 
-    // ----- Режимы -----
     function applyMode(mode, changeExpiry = true) {
         currentMode = mode;
         modeButtons.forEach(btn => {
@@ -1700,8 +1748,6 @@
             saveState();
         });
     });
-
-    // ----- Dropdown helpers -----
 
     function closeAllDropdowns() {
         assetDropdown.classList.remove('open');
@@ -1787,8 +1833,6 @@
         if (item) pickExpiryFromItem(item);
     }
 
-    // ----- Таймер -----
-
     function startTimer(seconds) {
         if (timerId) clearInterval(timerId);
         totalSeconds = seconds;
@@ -1831,8 +1875,6 @@
             progressInner.style.width = '0%';
         }
     }
-
-    // ----- История -----
 
     function addToHistory(entry) {
         history.unshift(entry);
@@ -1892,8 +1934,6 @@
         const m = String(date.getMinutes()).padStart(2, '0');
         return `${h}:${m}`;
     }
-
-    // ----- State -----
 
     function saveState() {
         try {
@@ -2080,10 +2120,7 @@
     loadState();
     applyTranslations();
 
-    // ----- Кнопка запуска / остановки -----
-
     btnStart.addEventListener('click', () => {
-        // если таймер уже идёт — останавливаем
         if (timerId) {
             cancelTimer();
             return;
@@ -2139,7 +2176,6 @@
         saveState();
     });
 
-    // Переливание интерфейса при скролле
     (function setupScrollParallax() {
         const body = document.body;
         const card = document.querySelector('.card');
